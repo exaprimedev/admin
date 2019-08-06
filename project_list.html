@@ -77,50 +77,11 @@
             <!-- Sidebar -->
             <div class="navbar-default sidebar" role="navigation">
                 <div class="sidebar-nav navbar-collapse">
-
                     <ul class="nav" id="side-menu">
-                        <li>
-                            <a href="#"><i class="fa fa-dashboard fa-fw"></i> Home</a>
-                        </li>
-                        <li>
-                            <a href="#"><i class="fa fa-sitemap fa-fw"></i> プロジェクト管理<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                <li>
-                                    <a href="#">プロジェクト一覧</a>
-                                </li>
-                                <li>
-                                    <a href="#">メンバー一覧</a>
-                                </li>
-                                <li>
-                                    <a href="#">月次報告_100001</a>
-                                </li>
-                                <li>
-                                    <a href="#">月次報告_100002</a>
-                                </li>
-                                <li>
-                                    <a href="#">月次報告_100003</a>
-                                </li>
-                                <li>
-                                    <a href="#">月次報告_200001</a>
-                                </li>
-                                <li>
-                                    <a href="#">月次報告_200002</a>
-                                </li>
-                                <li>
-                                    <a href="#">月次報告_200003</a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="#" class="active"><i class="fa fa-dashboard fa-fw"></i> 資産管理</a>
-                        </li>
-                        <li>
-                            <a href="#" class="active"><i class="fa fa-dashboard fa-fw"></i> HP管理</a>
-                        </li>
                     </ul>
-
                 </div>
             </div>
+
         </nav>
 
         <!-- Page Content -->
@@ -202,42 +163,78 @@
         $(function() {
             $.ajax({
                     type: 'GET',
-                    url: 'https://script.google.com/macros/s/AKfycbyPWuArH5REnTsv0CBBVh-EyVDfyOfgXzgBYJdKrvQpzKXMWyI/exec?sn=project_list',
+                    url: 'https://script.google.com/macros/s/AKfycbyPWuArH5REnTsv0CBBVh-EyVDfyOfgXzgBYJdKrvQpzKXMWyI/exec?sn=project_management',
                     dataType: 'jsonp',
                     jsonpCallback: 'jsondata'
                 })
                 .then(
-                    function(result) {
-                        $('#project_list').DataTable({
-                            destroy: true,
-                            data: result,
-                            columns: [{
-                                data: "#"
-                            }, {
-                                data: "社内管理番号"
-                            }, {
-                                data: "プロジェクト名"
-                            }, {
-                                data: "業種"
-                            }, {
-                                data: "開始"
-                            }, {
-                                data: "終了"
-                            }, {
-                                data: "発注元"
-                            }, {
-                                data: "エンドユーザ"
-                            }, {
-                                data: "プロジェクト概要"
-                            }, {
-                                data: "言語・環境・ツール等"
-                            }]
-                        });
+                    function(data) {
+                        var out = '<li><a href="index.html" class="active"><i class="fa fa-dashboard fa-fw"></i> Home</a></li>';
+                        var tmplv1st = '';
+                        var tmplv1end = '';
+                        var tmplv2st = '';
+                        var tmplv2end = '';
+                        var tmplv3 = '';
+                        for (var idx in data) {
+                            if (data[idx].level == 1) {
+                                tmplv1st += '<li>';
+                                tmplv1st += '<a href="#"><i class="fa fa-sitemap fa-fw"></i>' + data[idx].sheet_name_jp + '<span class="fa arrow"></span></a>';
+                                tmplv1end += '</li>';
+                            } else if (data[idx].level == 2) {
+                                tmplv2st += '<ul class="nav nav-second-level collapse in"><li><a href="' + data[idx].sheet_name + '.html">' + data[idx].sheet_name_jp + '</a></li>';
+                                tmplv2end += '</ul>';
+                            } else if (data[idx].level == 3) {
+                                tmplv3 += '<li><a href="' + data[idx].sheet_name + '.html">' + data[idx].sheet_name_jp + '</a></li>';
+                            }
+                        }
+                        out += tmplv1st + tmplv2st + tmplv3 + tmplv2end + tmplv1end;
+                        $("#side-menu").html(out)
+                        $.ajax({
+                                type: 'GET',
+                                url: 'https://script.google.com/macros/s/AKfycbyPWuArH5REnTsv0CBBVh-EyVDfyOfgXzgBYJdKrvQpzKXMWyI/exec?sn=project_list',
+                                dataType: 'jsonp',
+                                jsonpCallback: 'jsondata'
+                            })
+                            .then(
+                                function(result) {
+                                    $('#project_list').DataTable({
+                                        destroy: true,
+                                        data: result,
+                                        columns: [{
+                                            data: "#"
+                                        }, {
+                                            data: "社内管理番号"
+                                        }, {
+                                            data: "プロジェクト名"
+                                        }, {
+                                            data: "業種"
+                                        }, {
+                                            data: "開始"
+                                        }, {
+                                            data: "終了"
+                                        }, {
+                                            data: "発注元"
+                                        }, {
+                                            data: "エンドユーザ"
+                                        }, {
+                                            data: "プロジェクト概要"
+                                        }, {
+                                            data: "言語・環境・ツール等"
+                                        }]
+                                    });
+                                },
+                                function() {
+                                    console.log('error');
+                                }
+                            );
                     },
                     function() {
                         console.log('error');
                     }
                 );
+        });
+        $(function() {
+
         });
     </script>
 

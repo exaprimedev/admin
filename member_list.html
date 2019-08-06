@@ -157,44 +157,6 @@
         $(function() {
             $.ajax({
                     type: 'GET',
-                    url: 'https://script.google.com/macros/s/AKfycbyPWuArH5REnTsv0CBBVh-EyVDfyOfgXzgBYJdKrvQpzKXMWyI/exec?sn=member_list',
-                    dataType: 'jsonp',
-                    jsonpCallback: 'jsondata'
-                })
-                .then(
-                    function(result) {
-                        $('#member_list').DataTable({
-                            destroy: true,
-                            data: result,
-                            autoWidth: false,
-                            columns: [{
-                                data: "#"
-                            }, {
-                                data: "社内管理番号"
-                            }, {
-                                data: "プロジェクト名称"
-                            }, {
-                                data: "参画者"
-                            }, {
-                                data: "開始"
-                            }, {
-                                data: "終了"
-                            }, {
-                                data: "役割"
-                            }, {
-                                data: "常駐先最寄り駅"
-                            }, {
-                                data: "常駐先"
-                            }]
-                        });
-                    },
-                    function() {
-                        console.log('error');
-                    }
-                );
-
-            $.ajax({
-                    type: 'GET',
                     url: 'https://script.google.com/macros/s/AKfycbyPWuArH5REnTsv0CBBVh-EyVDfyOfgXzgBYJdKrvQpzKXMWyI/exec?sn=project_management',
                     dataType: 'jsonp',
                     jsonpCallback: 'jsondata'
@@ -221,7 +183,43 @@
                         }
                         out += tmplv1st + tmplv2st + tmplv3 + tmplv2end + tmplv1end;
                         $("#side-menu").html(out)
-                            // console.log(out);
+                        $.ajax({
+                                type: 'GET',
+                                url: 'https://script.google.com/macros/s/AKfycbyPWuArH5REnTsv0CBBVh-EyVDfyOfgXzgBYJdKrvQpzKXMWyI/exec?sn=member_list',
+                                dataType: 'jsonp',
+                                jsonpCallback: 'jsondata'
+                            })
+                            .then(
+                                function(result) {
+                                    $('#member_list').DataTable({
+                                        destroy: true,
+                                        data: result,
+                                        autoWidth: false,
+                                        columns: [{
+                                            data: "#"
+                                        }, {
+                                            data: "社内管理番号"
+                                        }, {
+                                            data: "プロジェクト名称"
+                                        }, {
+                                            data: "参画者"
+                                        }, {
+                                            data: "開始"
+                                        }, {
+                                            data: "終了"
+                                        }, {
+                                            data: "役割"
+                                        }, {
+                                            data: "常駐先最寄り駅"
+                                        }, {
+                                            data: "常駐先"
+                                        }]
+                                    });
+                                },
+                                function() {
+                                    console.log('error');
+                                }
+                            );
                     },
                     function() {
                         console.log('error');
