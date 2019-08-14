@@ -49,7 +49,7 @@
         <!-- Navigation -->
         <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
             <div class="navbar-header">
-                <a class="navbar-brand" href="index.html">EXaPrime Admin</a>
+                <a class="navbar-brand" href="#">EXaPrime Admin</a>
             </div>
 
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -181,7 +181,6 @@
 
     <script>
         $(function() {
-            $("#row_dataTables").hide();
             $.ajax({
                     type: 'GET',
                     url: 'https://script.google.com/macros/s/AKfycbyPWuArH5REnTsv0CBBVh-EyVDfyOfgXzgBYJdKrvQpzKXMWyI/exec?sn=project_management',
@@ -198,13 +197,6 @@
                         console.log('error');
                     }
                 );
-            $(".sidebar-nav").on("click", function(e) {
-                var $_target = $(e.currentTarget);
-                var $_nav_second_level = $_target.find(".nav nav-second-level collapse");
-                if ($_nav_second_level) {
-                    $(".nav nav-second-level collapse").collapse();
-                }
-            })
         });
 
         function renderContents(sheet_name) {
@@ -227,10 +219,10 @@
             for (var idx in data) {
                 if (data[idx].level == 1) {
                     tmplv1st += '<li>';
-                    tmplv1st += '<a href="#"><i class="fa fa-sitemap fa-fw"></i>' + data[idx].sheet_name_jp + '<span class="fa arrow"></span></a>';
+                    tmplv1st += '<a href="#" onclick="toggleMenu(this); return false;"><i class="fa fa-sitemap fa-fw"></i>' + data[idx].sheet_name_jp + '<span class="fa arrow"></span></a>';
                     tmplv1end += '</li>';
                 } else if (data[idx].level == 2) {
-                    tmplv2st += '<ul class="nav nav-second-level collapse in"><li><a href="#" onclick="renderContents(\'' + data[idx].sheet_name + '\')">' + data[idx].sheet_name_jp + '</a></li>';
+                    tmplv2st += '<ul class="nav nav-second-level" style="display: none;"><li><a href="#" onclick="renderContents(\'' + data[idx].sheet_name + '\')">' + data[idx].sheet_name_jp + '</a></li>';
                     tmplv2end += '</ul>';
                 } else if (data[idx].level == 3) {
                     tmplv3 += '<li><a href="#" onclick="renderContents(\'' + data[idx].sheet_name + '\')">' + data[idx].sheet_name_jp + '</a></li>';
@@ -309,6 +301,10 @@
             out_thead += '</tr>';
             out_thead += '</table>';
             return out_thead
+        }
+
+        function toggleMenu(obj) {
+            $(obj).next('ul').slideToggle();
         }
     </script>
 </body>
