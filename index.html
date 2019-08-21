@@ -188,6 +188,7 @@
                     jsonpCallback: 'jsondata'
                 })
                 .then(
+                    function(data_pj) {
                         menujson = Object.assign(menujson, data_pj)
                         $.ajax({
                                 type: 'GET',
