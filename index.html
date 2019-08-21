@@ -177,6 +177,9 @@
 
     <script>
         $(function() {
+            if (localStorage.length == 0) {
+                window.location.href = "login.html";
+            }
             $.ajax({
                     type: 'GET',
                     url: 'https://script.google.com/macros/s/AKfycbyPWuArH5REnTsv0CBBVh-EyVDfyOfgXzgBYJdKrvQpzKXMWyI/exec?sn=project_management',

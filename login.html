@@ -53,8 +53,12 @@
                                             <input name="remember" type="checkbox" value="Remember Me">Remember Me
                                         </label>
                                 </div>
+                                <div class="alert alert-danger" id="error_msg" style="display:none;">
+                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. <a href="#" class="alert-link">Alert Link</a>.
+                                </div>
                                 <!-- Change this to a button or input when using this as a form -->
-                                <a href="index.html" class="btn btn-lg btn-success btn-block" onclick="getAuth()">ログイン</a>
+                                <a href="#" class="btn btn-success btn-block" onclick="getAuth()">ログイン</a>
+                                <a href="signup.html" class="btn btn-info btn-block">ユーザー登録</a>
                             </fieldset>
                         </form>
                     </div>
@@ -81,7 +85,6 @@
         function getAuth() {
             var userid = $("#userid").val();
             var password = $("#password").val();
-
             $.ajax({
                     type: 'GET',
                     url: 'https://script.google.com/macros/s/AKfycbztaNYCMJKZczlxj5nXD2L1Ac-nR9thkeLOyqz-BsXAs5iBNrc/exec?sn=user_auth&q=' + userid + password + 0,
@@ -90,6 +93,16 @@
                 })
                 .then(
                     function(data) {
+                        if (data.length > 0) {
+                            //localstrageへユーザー情報格納
+                            localStorage.setItem('user_name', data[0].user_name);
+                            localStorage.setItem('permission_pages', data[0].permission_pages);
+                            //index.htmlへ
+                            window.location.href = "index.html"
+                        } else {
+                            //エラーメッセージ表示
+                            $("#error_msg").show();
+                        }
                         console.log('success');
                     },
                     function() {
