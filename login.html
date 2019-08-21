@@ -48,13 +48,8 @@
                                 <div class="form-group">
                                     <input class="form-control" placeholder="パスワード" name="password" id="password" type="password" value="">
                                 </div>
-                                <div class="checkbox">
-                                    <label>
-                                            <input name="remember" type="checkbox" value="Remember Me">Remember Me
-                                        </label>
-                                </div>
                                 <div class="alert alert-danger" id="error_msg" style="display:none;">
-                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. <a href="#" class="alert-link">Alert Link</a>.
+                                    ユーザーIDまたはパスワードが間違っています。
                                 </div>
                                 <!-- Change this to a button or input when using this as a form -->
                                 <a href="#" class="btn btn-success btn-block" onclick="getAuth()">ログイン</a>
@@ -80,7 +75,9 @@
     <script src="js/startmin.js"></script>
 
     <script>
-        $(function() {});
+        $(function() {
+            $("#error_msg").hide();
+        });
 
         function getAuth() {
             var userid = $("#userid").val();

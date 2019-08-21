@@ -180,6 +180,7 @@
             if (localStorage.length == 0) {
                 window.location.href = "login.html";
             }
+            var menujson = {};
             $.ajax({
                     type: 'GET',
                     url: 'https://script.google.com/macros/s/AKfycbyPWuArH5REnTsv0CBBVh-EyVDfyOfgXzgBYJdKrvQpzKXMWyI/exec?sn=project_management',
@@ -187,9 +188,24 @@
                     jsonpCallback: 'jsondata'
                 })
                 .then(
-                    function(data) {
-                        $("#side-menu").html(createMenuHTML(data));
-                        $("#row_project_summary_contents").html(createPanelHTML(data));
+                        menujson = Object.assign(menujson, data_pj)
+                        $.ajax({
+                                type: 'GET',
+                                url: 'https://script.google.com/macros/s/AKfycbwdDBd2Fckq0Lnzf2yZMTOxB-fWuE0_B4Rxl-0azNEqpdSyJ0kA/exec?sn=inner_work_management',
+                                dataType: 'jsonp',
+                                jsonpCallback: 'jsondata'
+                            })
+                            .then(
+                                function(data_iw) {
+                                    menujson = Object.assign(menujson, data_iw)
+                                    console.log('success');
+                                },
+                                function() {
+                                    console.log('error');
+                                }
+                            );
+                        $("#side-menu").html(createMenuHTML(menujson));
+                        $("#row_project_summary_contents").html(createPanelHTML(data_pj));
                         console.log('success');
                     },
                     function() {
