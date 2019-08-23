@@ -61,12 +61,11 @@
 
             <!-- Top Navigation: Left Menu -->
             <ul class="nav navbar-nav navbar-left navbar-top-links">
-                <li><a target="_blank" href="https://exaprimedev.github.io/test/"><i class="fa fa-home fa-fw"></i> HP</a></li>
+                <li><a target="_blank" href="https://exaprimedev.github.io/test/"><i class="fa fa-home fa-fw"></i>HP</a></li>
             </ul>
 
             <!-- Top Navigation: Right Menu -->
-            <ul class="nav navbar-right navbar-top-links">
-                <li><a target="_blank" href="https://exaprimedev.github.io/admin/"><i class="fa fa-user fa-fw"></i> admin</a></li>
+            <ul class="nav navbar-right navbar-top-links" id="top-links">
             </ul>
 
             <!-- Sidebar -->
@@ -180,6 +179,7 @@
             if (localStorage.length == 0) {
                 window.location.href = "login.html";
             }
+            $("#top-links").html(createTopLinksHTML());
             var menu_home = '<li><a href="index.html" class="active"><i class="fa fa-dashboard fa-fw"></i> Home</a></li>';
             var menu_pj = '';
             var menu_iw = '';
@@ -225,6 +225,21 @@
             $("#row_dataTables_title").show();
             $("#row_dataTables").show();
             createDataTables(book, sheet_name, sheet_name_jp, link);
+        }
+
+        function createTopLinksHTML() {
+            var out_toplinks = '<li>';
+            out_toplinks += '<a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="true">';
+            out_toplinks += '<i class="fa fa-user fa-fw"></i>' + localStorage.getItem("user_name") + '<b class="caret"></b>';
+            out_toplinks += '</a>';
+            out_toplinks += '<ul class="dropdown-menu dropdown-user">';
+            out_toplinks += '<li><a href="#"><i class="fa fa-user fa-fw"></i>マイページ</a>';
+            out_toplinks += '</li>';
+            out_toplinks += '<li><a href="#" onclick="logout()"><i class="fa fa-sign-out fa-fw"></i>ログアウト</a>';
+            out_toplinks += '</li>';
+            out_toplinks += '</ul>';
+            out_toplinks += '</li>';
+            return out_toplinks;
         }
 
         function createMenuHTML(book, data) {
@@ -333,6 +348,11 @@
 
         function toggleMenu(obj) {
             $(obj).next('ul').slideToggle();
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = "login.html"
         }
     </script>
 </body>

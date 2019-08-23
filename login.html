@@ -90,7 +90,7 @@
                 })
                 .then(
                     function(data) {
-                        if (data.length > 0) {
+                        if (data.length == 1) {
                             //localstrageへユーザー情報格納
                             localStorage.setItem('user_name', data[0].user_name);
                             localStorage.setItem('permission_pages', data[0].permission_pages);
