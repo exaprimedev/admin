@@ -132,9 +132,7 @@
                 <!-- /.row -->
 
                 <div class="row" id="row_dataTables_title" style="display: none;">
-                    <div class="col-lg-12">
-                        <h3 class="page-header">プロジェクト管理</h3>
-                    </div>
+
                 </div>
                 <div class="row" id="row_dataTables" style="display: none;">
                     <div class="col-lg-12">
@@ -176,37 +174,41 @@
     <script src="js/startmin.js"></script>
 
     <script>
+        const url_pj = 'https://script.google.com/macros/s/AKfycbyPWuArH5REnTsv0CBBVh-EyVDfyOfgXzgBYJdKrvQpzKXMWyI/exec';
+        const url_iw = 'https://script.google.com/macros/s/AKfycbwdDBd2Fckq0Lnzf2yZMTOxB-fWuE0_B4Rxl-0azNEqpdSyJ0kA/exec';
         $(function() {
             if (localStorage.length == 0) {
                 window.location.href = "login.html";
             }
-            var menujson = {};
+            var menu_home = '<li><a href="index.html" class="active"><i class="fa fa-dashboard fa-fw"></i> Home</a></li>';
+            var menu_pj = '';
+            var menu_iw = '';
             $.ajax({
                     type: 'GET',
-                    url: 'https://script.google.com/macros/s/AKfycbyPWuArH5REnTsv0CBBVh-EyVDfyOfgXzgBYJdKrvQpzKXMWyI/exec?sn=project_management',
+                    url: url_pj + '?sn=project_management',
                     dataType: 'jsonp',
                     jsonpCallback: 'jsondata'
                 })
                 .then(
-                    function(data_pj) {
-                        menujson = Object.assign(menujson, data_pj)
+                    function(data) {
+                        menu_pj = createMenuHTML('pj', data);
+                        $("#row_project_summary_contents").html(createPanelHTML(data));
                         $.ajax({
                                 type: 'GET',
-                                url: 'https://script.google.com/macros/s/AKfycbwdDBd2Fckq0Lnzf2yZMTOxB-fWuE0_B4Rxl-0azNEqpdSyJ0kA/exec?sn=inner_work_management',
+                                url: url_iw + '?sn=inner_work_management',
                                 dataType: 'jsonp',
                                 jsonpCallback: 'jsondata'
                             })
                             .then(
-                                function(data_iw) {
-                                    menujson = Object.assign(menujson, data_iw)
+                                function(data) {
+                                    menu_iw = createMenuHTML('iw', data);
+                                    $("#side-menu").html(menu_home + menu_pj + menu_iw);
                                     console.log('success');
                                 },
                                 function() {
                                     console.log('error');
                                 }
                             );
-                        $("#side-menu").html(createMenuHTML(menujson));
-                        $("#row_project_summary_contents").html(createPanelHTML(data_pj));
                         console.log('success');
                     },
                     function() {
@@ -215,33 +217,34 @@
                 );
         });
 
-        function renderContents(sheet_name, sheet_name_jp, link) {
+        function renderContents(book, sheet_name, sheet_name_jp, link) {
             $("#row_news_title").hide();
             $("#row_news_contents").hide();
             $("#row_project_summary_title").hide();
             $("#row_project_summary_contents").hide();
             $("#row_dataTables_title").show();
             $("#row_dataTables").show();
-            createDataTables(sheet_name, sheet_name_jp, link);
+            createDataTables(book, sheet_name, sheet_name_jp, link);
         }
 
-        function createMenuHTML(data) {
-            var out_memu = '<li><a href="index.html" class="active"><i class="fa fa-dashboard fa-fw"></i> Home</a></li>';
+        function createMenuHTML(book, data) {
+            var out_memu = '';
             var tmplv1st = '';
             var tmplv1end = '';
             var tmplv2st = '';
             var tmplv2end = '';
             var tmplv3 = '';
+
             for (var idx in data) {
                 if (data[idx].level == 1) {
                     tmplv1st += '<li>';
                     tmplv1st += '<a href="#" onclick="toggleMenu(this); return false;"><i class="fa fa-sitemap fa-fw"></i>' + data[idx].sheet_name_jp + '<span class="fa arrow"></span></a>';
                     tmplv1end += '</li>';
                 } else if (data[idx].level == 2) {
-                    tmplv2st += '<ul class="nav nav-second-level" style="display: none;"><li><a href="#" onclick="renderContents(\'' + data[idx].sheet_name + '\',\'' + data[idx].sheet_name_jp + '\',\'' + data[idx].link + '\')">' + data[idx].sheet_name_jp + '</a></li>';
+                    tmplv2st += '<ul class="nav nav-second-level" style="display: none;"><li><a href="#" onclick="renderContents(\'' + book + '\',\'' + data[idx].sheet_name + '\',\'' + data[idx].sheet_name_jp + '\',\'' + data[idx].link + '\')">' + data[idx].sheet_name_jp + '</a></li>';
                     tmplv2end += '</ul>';
                 } else if (data[idx].level == 3) {
-                    tmplv3 += '<li><a href="#" onclick="renderContents(\'' + data[idx].sheet_name + '\',\'' + data[idx].sheet_name_jp + '\',\'' + data[idx].link + '\')">' + data[idx].sheet_name_jp + '</a></li>';
+                    tmplv3 += '<li><a href="#" onclick="renderContents(\'' + book + '\',\'' + data[idx].sheet_name + '\',\'' + data[idx].sheet_name_jp + '\',\'' + data[idx].link + '\')">' + data[idx].sheet_name_jp + '</a></li>';
                 }
             }
             out_memu += tmplv1st + tmplv2st + tmplv3 + tmplv2end + tmplv1end;
@@ -265,7 +268,7 @@
                     out_panel += '</div>'
                     out_panel += '</div>'
                     out_panel += '</div>'
-                    out_panel += '<a href="#" onclick="renderContents(\'' + data[idx].sheet_name + '\',\'' + data[idx].sheet_name_jp + '\',\'' + data[idx].link + '\')">'
+                    out_panel += '<a href="#" onclick="renderContents(\'pj\',\'' + data[idx].sheet_name + '\',\'' + data[idx].sheet_name_jp + '\',\'' + data[idx].link + '\')">'
                     out_panel += '<div class="panel-footer">'
                     out_panel += '<span class="pull-left">' + data[idx].sheet_name_jp + '</span>'
                     out_panel += '<span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>'
@@ -279,11 +282,19 @@
             return out_panel
         }
 
-        function createDataTables(sheet_name, sheet_name_jp, link) {
+        function createDataTables(book, sheet_name, sheet_name_jp, link) {
+            var url;
+            if (book == "pj") {
+                url = url_pj;
+                $("#row_dataTables_title").html('<div class="col-lg-12"><h3 class="page-header">プロジェクト管理</h3></div>');
+            } else {
+                url = url_iw;
+                $("#row_dataTables_title").html('<div class="col-lg-12"><h3 class="page-header">社内業務管理</h3></div>');
+            }
             $("#dataTables_panel_header").html('<span>' + sheet_name_jp + '</span><span class="pull-right"><a class="btn btn-primary btn-sm" target="_blank" href="' + link + '">更新</a></span><div class="clearfix"></div>');
             $.ajax({
                     type: 'GET',
-                    url: 'https://script.google.com/macros/s/AKfycbyPWuArH5REnTsv0CBBVh-EyVDfyOfgXzgBYJdKrvQpzKXMWyI/exec?sn=' + sheet_name,
+                    url: url + '?sn=' + sheet_name,
                     dataType: 'jsonp',
                     jsonpCallback: 'jsondata'
                 })
@@ -294,7 +305,7 @@
                             arrHeader.push((new Function("return " + '{data:"' + key + '"}'))());
                         }
                         $("#output_dataTables").html(createDataTablesHTML(arrHeader));
-                        $('#member_list').DataTable({
+                        $('#datatable').DataTable({
                             destroy: true,
                             data: result,
                             autoWidth: false,
@@ -308,7 +319,7 @@
         }
 
         function createDataTablesHTML(arrHeader) {
-            var out_thead = '<table class="table table-striped table-bordered table-hover" id="member_list">';
+            var out_thead = '<table class="table table-striped table-bordered table-hover" id="datatable">';
             out_thead += '<thead>';
             out_thead += '<tr>';
             for (var idx in arrHeader) {
