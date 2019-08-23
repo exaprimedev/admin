@@ -87,39 +87,7 @@
                     </div>
                 </div>
                 <div class="row" id="row_news_contents">
-                    <div class="col-lg-3 col-md-6">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                2019/08/07：8月帰社日について
-                            </div>
-                            <div class="panel-body">
-                                <p>8月30日(金) 17:00~ 四ツ谷事務。任意参加とします。(加藤)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- /.col-lg-4 -->
-                    <div class="col-lg-3 col-md-6">
-                        <div class="panel panel-primary">
-                            <div class="panel-heading">
-                                2019/08/01：夏季休暇について
-                            </div>
-                            <div class="panel-body">
-                                <p>原則各現場規則に則り取得してください。(加藤)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- /.col-lg-4 -->
-                    <div class="col-lg-3 col-md-6">
-                        <div class="panel panel-info">
-                            <div class="panel-heading">
-                                2019/07/25：自社HPリニューアル企画
-                            </div>
-                            <div class="panel-body">
-                                <p>コンテンツ・写真素材等あればお知らせください。(迫間)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- /.col-lg-4 -->
+
                 </div>
                 <div class="row" id="row_project_summary_title">
                     <div class="col-lg-12">
@@ -203,6 +171,21 @@
                                 function(data) {
                                     menu_iw = createMenuHTML('iw', data);
                                     $("#side-menu").html(menu_home + menu_pj + menu_iw);
+                                    $.ajax({
+                                            type: 'GET',
+                                            url: url_iw + '?sn=notifications',
+                                            dataType: 'jsonp',
+                                            jsonpCallback: 'jsondata'
+                                        })
+                                        .then(
+                                            function(data) {
+                                                $("#row_news_contents").html(createNewsHTML(data));
+                                                console.log('success');
+                                            },
+                                            function() {
+                                                console.log('error');
+                                            }
+                                        );
                                     console.log('success');
                                 },
                                 function() {
@@ -240,6 +223,19 @@
             out_toplinks += '</ul>';
             out_toplinks += '</li>';
             return out_toplinks;
+        }
+
+        function createNewsHTML(data) {
+            var out_news = '';
+            for (var idx in data) {
+                out_news += '<div class="col-lg-3 col-md-6">';
+                out_news += '<div class="panel panel-default">';
+                out_news += '<div class="panel-heading">' + data[idx].日時 + '：' + data[idx].タイトル + '</div>';
+                out_news += '<div class="panel-body"><p>' + data[idx].内容 + '(' + data[idx].更新者 + ')</p></div>';
+                out_news += '</div>';
+                out_news += '</div>';
+            }
+            return out_news;
         }
 
         function createMenuHTML(book, data) {
