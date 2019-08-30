@@ -92,6 +92,7 @@
                     function(data) {
                         if (data.length == 1) {
                             //localstrageへユーザー情報格納
+                            localStorage.setItem('mail', data[0].mail);
                             localStorage.setItem('user_name', data[0].user_name);
                             localStorage.setItem('permission_pages', data[0].permission_pages);
                             //index.htmlへ

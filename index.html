@@ -34,6 +34,9 @@
     <!-- Custom Fonts -->
     <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
+    <!-- Bootstrap-datepicker -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.min.css" rel="stylesheet" type="text/css">
+
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -49,7 +52,7 @@
         <!-- Navigation -->
         <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
             <div class="navbar-header">
-                <a class="navbar-brand" href="#">EXaPrime Admin</a>
+                <a class="navbar-brand" href="index.html">EXaPrime Admin</a>
             </div>
 
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -117,6 +120,56 @@
                     </div>
                     <!-- /.col-lg-12 -->
                 </div>
+
+                <div class="row" id="row_transportation_costs_contents" style="display: none;">
+                    <div class="panel-body">
+                        <form id="transportation_costs_form" role="form">
+                            <fieldset>
+                                <div class="form-group" style="display: none;">
+                                    <label>メールアドレス</label>
+                                    <input class="form-control" id="transportation_costs_form_mail" name="entry.354726009" type="email" autofocus required>
+                                </div>
+                                <div class="form-group">
+                                    <label>日付</label>
+                                    <input data-provide="datepicker" class="form-control datepicker" id="transportation_costs_form_date" required>
+                                    <input type="hidden" name="entry.1448482430_year" id="transportation_costs_form_year">
+                                    <input type="hidden" name="entry.1448482430_month" id="transportation_costs_form_month">
+                                    <input type="hidden" name="entry.1448482430_day" id="transportation_costs_form_day">
+                                </div>
+                                <div class="form-group">
+                                    <label>交通手段</label>
+                                    <select class="form-control" id="transportation_costs_form_means" name="entry.1418923752">
+                                        <option>電車</option>
+                                        <option>バス</option>
+                                        <option>タクシー</option>
+                                        <option>飛行機</option>
+                                        <option>その他</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>利用区間From</label>
+                                    <input class="form-control" id="transportation_costs_form_from" name="entry.118744780" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>利用区間To</label>
+                                    <input class="form-control" id="transportation_costs_form_to" name="entry.946747124" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>金額</label>
+                                    <input class="form-control" id="transportation_costs_form_costs" name="entry.197575203" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>備考</label>
+                                    <textarea class="form-control" rows="3" id="transportation_costs_form_note" name="entry.1285850841"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-success btn-block">申請</button>
+                            </fieldset>
+                        </form>
+                    </div>
+                    <div class="alert alert-success" style="display: none;">
+                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. <a href="#" class="alert-link">Alert Link</a>.
+                    </div>
+                </div>
                 <!-- ... Your content goes here ... -->
 
             </div>
@@ -140,9 +193,14 @@
     <!-- Custom Theme JavaScript -->
     <script src="js/startmin.js"></script>
 
+    <!-- Bootstrap-datepicker -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/locales/bootstrap-datepicker.ja.min.js"></script>
+
     <script>
         const url_pj = 'https://script.google.com/macros/s/AKfycbyPWuArH5REnTsv0CBBVh-EyVDfyOfgXzgBYJdKrvQpzKXMWyI/exec';
         const url_iw = 'https://script.google.com/macros/s/AKfycbwdDBd2Fckq0Lnzf2yZMTOxB-fWuE0_B4Rxl-0azNEqpdSyJ0kA/exec';
+        const url_transportation_costs_form = 'https://docs.google.com/forms/d/e/1FAIpQLSeoAXl6SYjF2T1G3mfRQm5XFZrvKXmAugtL9kIV4gRKvoW78A/formResponse';
         $(function() {
             if (localStorage.length == 0) {
                 window.location.href = "login.html";
@@ -198,16 +256,59 @@
                         console.log('error');
                     }
                 );
+            $('.datepicker').datepicker({
+                format: "yyyy/mm/dd",
+                language: 'ja',
+                autoclose: true
+            });
+            $("#transportation_costs_form").submit(function(event) {
+                var transportation_costs_form_mail = $("#transportation_costs_form_mail").val();
+                var transportation_costs_form_year = $("#transportation_costs_form_date").val().split("/")[0];
+                var transportation_costs_form_month = $("#transportation_costs_form_date").val().split("/")[1];
+                var transportation_costs_form_day = $("#transportation_costs_form_date").val().split("/")[2];
+                var transportation_costs_form_means = $("#transportation_costs_form_means").val();
+                var transportation_costs_form_from = $("#transportation_costs_form_from").val();
+                var transportation_costs_form_to = $("#transportation_costs_form_to").val();
+                var transportation_costs_form_costs = $("#transportation_costs_form_costs").val();
+                var transportation_costs_form_note = $("#transportation_costs_form_note").val();
+                $.ajax({
+                    url: url_transportation_costs_form,
+                    data: {
+                        "entry.354726009": transportation_costs_form_mail,
+                        "entry.1448482430_year": transportation_costs_form_year,
+                        "entry.1448482430_month": transportation_costs_form_month,
+                        "entry.1448482430_day": transportation_costs_form_day,
+                        "entry.1418923752": transportation_costs_form_means,
+                        "entry.118744780": transportation_costs_form_from,
+                        "entry.946747124": transportation_costs_form_to,
+                        "entry.197575203": transportation_costs_form_costs,
+                        "entry.1285850841": transportation_costs_form_note
+                    },
+                    type: "POST",
+                    dataType: "xml",
+                    statusCode: {
+                        0: function() {
+                            alert("交通費精算を申請しました。")
+                        },
+                        200: function() {
+                            alert("errorMsg")
+                        }
+                    }
+                })
+                event.preventDefault();
+            });
         });
 
-        function renderContents(book, sheet_name, sheet_name_jp, link) {
-            $("#row_news_title").hide();
-            $("#row_news_contents").hide();
-            $("#row_project_summary_title").hide();
-            $("#row_project_summary_contents").hide();
+        function renderContents(book, sheet_name, sheet_name_jp, link, type) {
+            $(".row").hide();
             $("#row_dataTables_title").show();
             $("#row_dataTables").show();
             createDataTables(book, sheet_name, sheet_name_jp, link);
+
+            if (type == "form") {
+                $("#row_" + sheet_name + "_contents").show();
+                $("#transportation_costs_form_mail").val(localStorage.getItem("mail"));
+            }
         }
 
         function createTopLinksHTML() {
@@ -252,10 +353,10 @@
                     tmplv1st += '<a href="#" onclick="toggleMenu(this); return false;"><i class="fa fa-sitemap fa-fw"></i>' + data[idx].sheet_name_jp + '<span class="fa arrow"></span></a>';
                     tmplv1end += '</li>';
                 } else if (data[idx].level == 2) {
-                    tmplv2st += '<ul class="nav nav-second-level" style="display: none;"><li><a href="#" onclick="renderContents(\'' + book + '\',\'' + data[idx].sheet_name + '\',\'' + data[idx].sheet_name_jp + '\',\'' + data[idx].link + '\')">' + data[idx].sheet_name_jp + '</a></li>';
+                    tmplv2st += '<ul class="nav nav-second-level" style="display: none;"><li><a href="#" onclick="renderContents(\'' + book + '\',\'' + data[idx].sheet_name + '\',\'' + data[idx].sheet_name_jp + '\',\'' + data[idx].link + '\',\'' + data[idx].type + '\')">' + data[idx].sheet_name_jp + '</a></li>';
                     tmplv2end += '</ul>';
                 } else if (data[idx].level == 3) {
-                    tmplv3 += '<li><a href="#" onclick="renderContents(\'' + book + '\',\'' + data[idx].sheet_name + '\',\'' + data[idx].sheet_name_jp + '\',\'' + data[idx].link + '\')">' + data[idx].sheet_name_jp + '</a></li>';
+                    tmplv3 += '<li><a href="#" onclick="renderContents(\'' + book + '\',\'' + data[idx].sheet_name + '\',\'' + data[idx].sheet_name_jp + '\',\'' + data[idx].link + '\',\'' + data[idx].type + '\')">' + data[idx].sheet_name_jp + '</a></li>';
                 }
             }
             out_memu += tmplv1st + tmplv2st + tmplv3 + tmplv2end + tmplv1end;
@@ -279,7 +380,7 @@
                     out_panel += '</div>'
                     out_panel += '</div>'
                     out_panel += '</div>'
-                    out_panel += '<a href="#" onclick="renderContents(\'pj\',\'' + data[idx].sheet_name + '\',\'' + data[idx].sheet_name_jp + '\',\'' + data[idx].link + '\')">'
+                    out_panel += '<a href="#" onclick="renderContents(\'pj\',\'' + data[idx].sheet_name + '\',\'' + data[idx].sheet_name_jp + '\',\'' + data[idx].link + '\',\'' + data[idx].type + '\')">'
                     out_panel += '<div class="panel-footer">'
                     out_panel += '<span class="pull-left">' + data[idx].sheet_name_jp + '</span>'
                     out_panel += '<span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>'
