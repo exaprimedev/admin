@@ -84,6 +84,19 @@
         <div id="page-wrapper">
             <div class="container-fluid">
 
+                <div class="row" id="row_inout_title">
+                    <div class="col-lg-12">
+                        <h3 class="page-header" id="datetime"></h3>
+                    </div>
+                </div>
+                <div class="row" id="row_inout">
+                    <div class="col-lg-6">
+                        <button type="button" class="btn btn-info btn-lg btn-block">出勤</button>
+                    </div>
+                    <div class="col-lg-6">
+                        <button type="button" class="btn btn-success btn-lg btn-block">退勤</button>
+                    </div>
+                </div>
                 <div class="row" id="row_news_title">
                     <div class="col-lg-12">
                         <h3 class="page-header">お知らせ</h3>
@@ -451,6 +464,14 @@
             localStorage.clear();
             window.location.href = "login.html"
         }
+
+        function showtime() {
+            var today = new Date();
+            $weekday = ['日', '月', '火', '水', '木', '金', '土'];
+            month = today.getMonth() + 1;
+            $('#datetime').html(today.getFullYear() + "/" + month + "/" + today.getDate() + "(" + $weekday[today.getDay()] + ") " + today.getHours() + ":" + ('0' + today.getMinutes()).slice(-2) + ":" + ('0' + today.getSeconds()).slice(-2));
+        }
+        setInterval(showtime, 1000);
     </script>
 </body>
 
