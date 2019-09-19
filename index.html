@@ -94,10 +94,9 @@
                         <form id="attendannce_record_in_form" role="form">
                             <fieldset>
                                 <div class="form-group" style="display: none;">
-                                    <label>メールアドレス</label>
-                                    <input class="form-control" id="attendannce_record_in_form_mail" name="entry.201600831" type="email" autofocus required>
+                                    <input class="form-control" id="attendannce_record_in_form_mail" name="entry.201600831" type="email">
                                 </div>
-                                <button type="button" class="btn btn-info btn-lg btn-block">出勤</button>
+                                <button type="submit" class="btn btn-info btn-lg btn-block">出勤</button>
                             </fieldset>
                         </form>
                     </div>
@@ -105,10 +104,9 @@
                         <form id="attendannce_record_out_form" role="form">
                             <fieldset>
                                 <div class="form-group" style="display: none;">
-                                    <label>メールアドレス</label>
-                                    <input class="form-control" id="attendannce_record_out_form_mail" name="entry.1944725173" type="email" autofocus required>
+                                    <input class="form-control" id="attendannce_record_out_form_mail" name="entry.1944725173" type="email">
                                 </div>
-                                <button type="button" class="btn btn-success btn-lg btn-block">退勤</button>
+                                <button type="submit" class="btn btn-success btn-lg btn-block">退勤</button>
                             </fieldset>
                         </form>
                     </div>
@@ -229,13 +227,15 @@
     <script>
         const url_pj = 'https://script.google.com/macros/s/AKfycbyPWuArH5REnTsv0CBBVh-EyVDfyOfgXzgBYJdKrvQpzKXMWyI/exec';
         const url_iw = 'https://script.google.com/macros/s/AKfycbwdDBd2Fckq0Lnzf2yZMTOxB-fWuE0_B4Rxl-0azNEqpdSyJ0kA/exec';
-        const url_attendannce_record_in_form = "https://docs.google.com/forms/d/e/1FAIpQLSfUvu5sVp3xGOCoW04o0q_zcUMZFvMumAorfMpK-c9R8RnMOw/formResponseS";
-        const url_attendannce_record_out_form = "https://docs.google.com/forms/d/e/1FAIpQLSdY7tSdAoLYvRUQFA8MhxBbkDpGXVbpjo3sSdMGetVLrw0GuQ/formResponse";
+        const url_attendannce_record_in_form = 'https://docs.google.com/forms/d/e/1FAIpQLSfUvu5sVp3xGOCoW04o0q_zcUMZFvMumAorfMpK-c9R8RnMOw/formResponse';
+        const url_attendannce_record_out_form = 'https://docs.google.com/forms/d/e/1FAIpQLSdY7tSdAoLYvRUQFA8MhxBbkDpGXVbpjo3sSdMGetVLrw0GuQ/formResponse';
         const url_transportation_costs_form = 'https://docs.google.com/forms/d/e/1FAIpQLSeoAXl6SYjF2T1G3mfRQm5XFZrvKXmAugtL9kIV4gRKvoW78A/formResponse';
         $(function() {
             if (localStorage.length == 0) {
                 window.location.href = "login.html";
             }
+            $("#attendannce_record_in_form_mail").val(localStorage.getItem("mail"));
+            $("#attendannce_record_out_form_mail").val(localStorage.getItem("mail"));
             $("#top-links").html(createTopLinksHTML());
             var menu_home = '<li><a href="index.html" class="active"><i class="fa fa-dashboard fa-fw"></i> Home</a></li>';
             var menu_pj = '';
