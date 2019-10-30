@@ -43,17 +43,18 @@
                         <form role="form">
                             <fieldset>
                                 <div class="form-group">
-                                    <input class="form-control" placeholder="ユーザーID" name="userid" id="userid" autofocus>
+                                    <input class="form-control" placeholder="メールアドレス" name="email" id="email" autofocus>
                                 </div>
                                 <div class="form-group">
                                     <input class="form-control" placeholder="パスワード" name="password" id="password" type="password" value="">
                                 </div>
                                 <div class="alert alert-danger" id="error_msg" style="display:none;">
-                                    ユーザーIDまたはパスワードが間違っています。
+                                </div>
+                                <div class="alert alert-info" id="success_msg" style="display:none;">
                                 </div>
                                 <!-- Change this to a button or input when using this as a form -->
-                                <a href="#" class="btn btn-success btn-block" onclick="getAuth()">ログイン</a>
-                                <a href="signup.html" class="btn btn-info btn-block">ユーザー登録</a>
+                                <a href="#" class="btn btn-info btn-block" onclick="signIn()">ログイン</a>
+                                <a href="#" class="btn btn-success btn-block" onclick="signUp()">ユーザー登録</a>
                             </fieldset>
                         </form>
                     </div>
@@ -74,40 +75,85 @@
     <!-- Custom Theme JavaScript -->
     <script src="js/startmin.js"></script>
 
+    <!-- firebaseのスクリプト -->
+    <script src="https://www.gstatic.com/firebasejs/4.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.10.1/firebase-auth.js"></script>
+
     <script>
+        var config = {
+            apiKey: "AIzaSyArEg2nQofEnSJAdHhq86VsQHugfD-vfb8",
+            authDomain: "exaprime-dev-admin.firebaseapp.com",
+        };
         $(function() {
-            $("#error_msg").hide();
+            $("#alert_msg").hide();
+            firebase.initializeApp(config);
         });
 
-        function getAuth() {
-            var userid = $("#userid").val();
+        // アカウント登録
+        function signUp() {
+            var email = $("#email").val();
             var password = $("#password").val();
-            $.ajax({
-                    type: 'GET',
-                    url: 'https://script.google.com/macros/s/AKfycbztaNYCMJKZczlxj5nXD2L1Ac-nR9thkeLOyqz-BsXAs5iBNrc/exec?sn=user_auth&q=' + userid + password + 0,
-                    dataType: 'jsonp',
-                    jsonpCallback: 'jsondata'
-                })
-                .then(
-                    function(data) {
-                        if (data.length == 1) {
-                            //localstrageへユーザー情報格納
-                            localStorage.setItem('mail', data[0].mail);
-                            localStorage.setItem('user_name', data[0].user_name);
-                            localStorage.setItem('permission_pages', data[0].permission_pages);
-                            //index.htmlへ
-                            window.location.href = "index.html"
-                        } else {
-                            //エラーメッセージ表示
-                            $("#error_msg").show();
-                        }
-                        console.log('success');
-                    },
-                    function() {
-                        console.log('error');
-                    }
-                );
+
+            firebase.auth().createUserWithEmailAndPassword(email, password)
+                .then(function(result) {
+                    console.log(result);
+                    $("#success_msg").html('ユーザ登録成功');
+                    $("#success_msg").show();
+                }).catch(function(error) {
+                    console.log('signup error')
+                    var errorCode = error.code;
+                    var errorMessage = error.message;
+                    $("#error_msg").html('ユーザ登録失敗: ' + errorCode + ', ' + errorMessage);
+                    $("#error_msg").show();
+                });
         }
+
+        // ログイン
+        function signIn() {
+            var email = $("#email").val();
+            var password = $("#password").val();
+
+            firebase.auth().signInWithEmailAndPassword(email, password)
+                .then(function(result) {
+                    window.location.href = "index.html";
+                }).catch(function(error) {
+                    var errorCode = error.code;
+                    var errorMessage = error.message;
+                    $("#error_msg").html('ログイン失敗: ' + errorCode + ', ' + errorMessage);
+                    $("#error_msg").show();
+                });
+        }
+
+        // firebase認証に移行
+        // function getAuth() {
+        //     var userid = $("#userid").val();
+        //     var password = $("#password").val();
+        //     $.ajax({
+        //             type: 'GET',
+        //             url: 'https://script.google.com/macros/s/AKfycbztaNYCMJKZczlxj5nXD2L1Ac-nR9thkeLOyqz-BsXAs5iBNrc/exec?sn=user_auth&q=' + userid + password + 0,
+        //             dataType: 'jsonp',
+        //             jsonpCallback: 'jsondata'
+        //         })
+        //         .then(
+        //             function(data) {
+        //                 if (data.length == 1) {
+        //                     //localstrageへユーザー情報格納
+        //                     localStorage.setItem('mail', data[0].mail);
+        //                     localStorage.setItem('user_name', data[0].user_name);
+        //                     localStorage.setItem('permission_pages', data[0].permission_pages);
+        //                     //index.htmlへ
+        //                     window.location.href = "index.html"
+        //                 } else {
+        //                     //エラーメッセージ表示
+        //                     $("#error_msg").show();
+        //                 }
+        //                 console.log('success');
+        //             },
+        //             function() {
+        //                 console.log('error');
+        //             }
+        //         );
+        // }
     </script>
 
 </body>

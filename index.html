@@ -224,150 +224,165 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/locales/bootstrap-datepicker.ja.min.js"></script>
 
+    <!-- firebaseのスクリプト -->
+    <script src="https://www.gstatic.com/firebasejs/4.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.10.1/firebase-auth.js"></script>
+
     <script>
+        var config = {
+            apiKey: "AIzaSyArEg2nQofEnSJAdHhq86VsQHugfD-vfb8",
+            authDomain: "exaprime-dev-admin.firebaseapp.com",
+        };
         const url_pj = 'https://script.google.com/macros/s/AKfycbyPWuArH5REnTsv0CBBVh-EyVDfyOfgXzgBYJdKrvQpzKXMWyI/exec';
         const url_iw = 'https://script.google.com/macros/s/AKfycbwdDBd2Fckq0Lnzf2yZMTOxB-fWuE0_B4Rxl-0azNEqpdSyJ0kA/exec';
         const url_attendannce_record_in_form = 'https://docs.google.com/forms/d/e/1FAIpQLSfUvu5sVp3xGOCoW04o0q_zcUMZFvMumAorfMpK-c9R8RnMOw/formResponse';
         const url_attendannce_record_out_form = 'https://docs.google.com/forms/d/e/1FAIpQLSdY7tSdAoLYvRUQFA8MhxBbkDpGXVbpjo3sSdMGetVLrw0GuQ/formResponse';
         const url_transportation_costs_form = 'https://docs.google.com/forms/d/e/1FAIpQLSeoAXl6SYjF2T1G3mfRQm5XFZrvKXmAugtL9kIV4gRKvoW78A/formResponse';
         $(function() {
-            if (localStorage.length == 0) {
-                window.location.href = "login.html";
-            }
-            $("#attendannce_record_in_form_mail").val(localStorage.getItem("mail"));
-            $("#attendannce_record_out_form_mail").val(localStorage.getItem("mail"));
-            $("#top-links").html(createTopLinksHTML());
-            var menu_home = '<li><a href="index.html" class="active"><i class="fa fa-dashboard fa-fw"></i> Home</a></li>';
-            var menu_pj = '';
-            var menu_iw = '';
-            $.ajax({
-                    type: 'GET',
-                    url: url_pj + '?sn=project_management',
-                    dataType: 'jsonp',
-                    jsonpCallback: 'jsondata'
-                })
-                .then(
-                    function(data) {
-                        menu_pj = createMenuHTML('pj', data);
-                        $("#row_project_summary_contents").html(createPanelHTML(data));
+            firebase.initializeApp(config);
+            firebase.auth().onAuthStateChanged(function(user) {
+                if (user) {
+                    // ログイン認証済
+                    console.log('auth user', user);
+                    $("#attendannce_record_in_form_mail").val(user.email);
+                    $("#attendannce_record_out_form_mail").val(user.email);
+                    $("#top-links").html(createTopLinksHTML(user.email));
+                    var menu_home = '<li><a href="index.html" class="active"><i class="fa fa-dashboard fa-fw"></i> Home</a></li>';
+                    var menu_pj = '';
+                    var menu_iw = '';
+                    $.ajax({
+                            type: 'GET',
+                            url: url_pj + '?sn=project_management',
+                            dataType: 'jsonp',
+                            jsonpCallback: 'jsondata'
+                        })
+                        .then(
+                            function(data) {
+                                menu_pj = createMenuHTML('pj', data);
+                                $("#row_project_summary_contents").html(createPanelHTML(data));
+                                $.ajax({
+                                        type: 'GET',
+                                        url: url_iw + '?sn=inner_work_management',
+                                        dataType: 'jsonp',
+                                        jsonpCallback: 'jsondata'
+                                    })
+                                    .then(
+                                        function(data) {
+                                            menu_iw = createMenuHTML('iw', data);
+                                            $("#side-menu").html(menu_home + menu_pj + menu_iw);
+                                            $.ajax({
+                                                    type: 'GET',
+                                                    url: url_iw + '?sn=notifications',
+                                                    dataType: 'jsonp',
+                                                    jsonpCallback: 'jsondata'
+                                                })
+                                                .then(
+                                                    function(data) {
+                                                        $("#row_news_contents").html(createNewsHTML(data));
+                                                        console.log('success');
+                                                    },
+                                                    function() {
+                                                        console.log('error');
+                                                    }
+                                                );
+                                            console.log('success');
+                                        },
+                                        function() {
+                                            console.log('error');
+                                        }
+                                    );
+                                console.log('success');
+                            },
+                            function() {
+                                console.log('error');
+                            }
+                        );
+                    $('.datepicker').datepicker({
+                        format: "yyyy/mm/dd",
+                        language: 'ja',
+                        autoclose: true
+                    });
+                    $("#attendannce_record_in_form").submit(function(event) {
+                        var attendannce_record_in_form_mail = $("#attendannce_record_in_form_mail").val();
                         $.ajax({
-                                type: 'GET',
-                                url: url_iw + '?sn=inner_work_management',
-                                dataType: 'jsonp',
-                                jsonpCallback: 'jsondata'
-                            })
-                            .then(
-                                function(data) {
-                                    menu_iw = createMenuHTML('iw', data);
-                                    $("#side-menu").html(menu_home + menu_pj + menu_iw);
-                                    $.ajax({
-                                            type: 'GET',
-                                            url: url_iw + '?sn=notifications',
-                                            dataType: 'jsonp',
-                                            jsonpCallback: 'jsondata'
-                                        })
-                                        .then(
-                                            function(data) {
-                                                $("#row_news_contents").html(createNewsHTML(data));
-                                                console.log('success');
-                                            },
-                                            function() {
-                                                console.log('error');
-                                            }
-                                        );
-                                    console.log('success');
+                            url: url_attendannce_record_in_form,
+                            data: {
+                                "entry.201600831": attendannce_record_in_form_mail,
+                            },
+                            type: "POST",
+                            dataType: "xml",
+                            statusCode: {
+                                0: function() {
+                                    alert("出勤しました。")
                                 },
-                                function() {
-                                    console.log('error');
+                                200: function() {
+                                    alert("errorMsg")
                                 }
-                            );
-                        console.log('success');
-                    },
-                    function() {
-                        console.log('error');
-                    }
-                );
-            $('.datepicker').datepicker({
-                format: "yyyy/mm/dd",
-                language: 'ja',
-                autoclose: true
+                            }
+                        })
+                        event.preventDefault();
+                    });
+                    $("#attendannce_record_out_form").submit(function(event) {
+                        var attendannce_record_out_form_mail = $("#attendannce_record_out_form_mail").val();
+                        $.ajax({
+                            url: url_attendannce_record_out_form,
+                            data: {
+                                "entry.1944725173": attendannce_record_out_form_mail,
+                            },
+                            type: "POST",
+                            dataType: "xml",
+                            statusCode: {
+                                0: function() {
+                                    alert("退勤しました。")
+                                },
+                                200: function() {
+                                    alert("errorMsg")
+                                }
+                            }
+                        })
+                        event.preventDefault();
+                    });
+                    $("#transportation_costs_form").submit(function(event) {
+                        var transportation_costs_form_mail = $("#transportation_costs_form_mail").val();
+                        var transportation_costs_form_year = $("#transportation_costs_form_date").val().split("/")[0];
+                        var transportation_costs_form_month = $("#transportation_costs_form_date").val().split("/")[1];
+                        var transportation_costs_form_day = $("#transportation_costs_form_date").val().split("/")[2];
+                        var transportation_costs_form_means = $("#transportation_costs_form_means").val();
+                        var transportation_costs_form_from = $("#transportation_costs_form_from").val();
+                        var transportation_costs_form_to = $("#transportation_costs_form_to").val();
+                        var transportation_costs_form_costs = $("#transportation_costs_form_costs").val();
+                        var transportation_costs_form_note = $("#transportation_costs_form_note").val();
+                        $.ajax({
+                            url: url_transportation_costs_form,
+                            data: {
+                                "entry.354726009": transportation_costs_form_mail,
+                                "entry.1448482430_year": transportation_costs_form_year,
+                                "entry.1448482430_month": transportation_costs_form_month,
+                                "entry.1448482430_day": transportation_costs_form_day,
+                                "entry.1418923752": transportation_costs_form_means,
+                                "entry.118744780": transportation_costs_form_from,
+                                "entry.946747124": transportation_costs_form_to,
+                                "entry.197575203": transportation_costs_form_costs,
+                                "entry.1285850841": transportation_costs_form_note
+                            },
+                            type: "POST",
+                            dataType: "xml",
+                            statusCode: {
+                                0: function() {
+                                    alert("交通費精算を申請しました。")
+                                },
+                                200: function() {
+                                    alert("errorMsg")
+                                }
+                            }
+                        })
+                        event.preventDefault();
+                    });
+                } else {
+                    window.location.href = "login.html";
+                }
             });
-            $("#attendannce_record_in_form").submit(function(event) {
-                var attendannce_record_in_form_mail = $("#attendannce_record_in_form_mail").val();
-                $.ajax({
-                    url: url_attendannce_record_in_form,
-                    data: {
-                        "entry.201600831": attendannce_record_in_form_mail,
-                    },
-                    type: "POST",
-                    dataType: "xml",
-                    statusCode: {
-                        0: function() {
-                            alert("出勤しました。")
-                        },
-                        200: function() {
-                            alert("errorMsg")
-                        }
-                    }
-                })
-                event.preventDefault();
-            });
-            $("#attendannce_record_out_form").submit(function(event) {
-                var attendannce_record_out_form_mail = $("#attendannce_record_out_form_mail").val();
-                $.ajax({
-                    url: url_attendannce_record_out_form,
-                    data: {
-                        "entry.1944725173": attendannce_record_out_form_mail,
-                    },
-                    type: "POST",
-                    dataType: "xml",
-                    statusCode: {
-                        0: function() {
-                            alert("退勤しました。")
-                        },
-                        200: function() {
-                            alert("errorMsg")
-                        }
-                    }
-                })
-                event.preventDefault();
-            });
-            $("#transportation_costs_form").submit(function(event) {
-                var transportation_costs_form_mail = $("#transportation_costs_form_mail").val();
-                var transportation_costs_form_year = $("#transportation_costs_form_date").val().split("/")[0];
-                var transportation_costs_form_month = $("#transportation_costs_form_date").val().split("/")[1];
-                var transportation_costs_form_day = $("#transportation_costs_form_date").val().split("/")[2];
-                var transportation_costs_form_means = $("#transportation_costs_form_means").val();
-                var transportation_costs_form_from = $("#transportation_costs_form_from").val();
-                var transportation_costs_form_to = $("#transportation_costs_form_to").val();
-                var transportation_costs_form_costs = $("#transportation_costs_form_costs").val();
-                var transportation_costs_form_note = $("#transportation_costs_form_note").val();
-                $.ajax({
-                    url: url_transportation_costs_form,
-                    data: {
-                        "entry.354726009": transportation_costs_form_mail,
-                        "entry.1448482430_year": transportation_costs_form_year,
-                        "entry.1448482430_month": transportation_costs_form_month,
-                        "entry.1448482430_day": transportation_costs_form_day,
-                        "entry.1418923752": transportation_costs_form_means,
-                        "entry.118744780": transportation_costs_form_from,
-                        "entry.946747124": transportation_costs_form_to,
-                        "entry.197575203": transportation_costs_form_costs,
-                        "entry.1285850841": transportation_costs_form_note
-                    },
-                    type: "POST",
-                    dataType: "xml",
-                    statusCode: {
-                        0: function() {
-                            alert("交通費精算を申請しました。")
-                        },
-                        200: function() {
-                            alert("errorMsg")
-                        }
-                    }
-                })
-                event.preventDefault();
-            });
+
         });
 
         function renderContents(book, sheet_name, sheet_name_jp, link, type) {
@@ -382,15 +397,15 @@
             }
         }
 
-        function createTopLinksHTML() {
+        function createTopLinksHTML(email) {
             var out_toplinks = '<li>';
             out_toplinks += '<a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="true">';
-            out_toplinks += '<i class="fa fa-user fa-fw"></i>' + localStorage.getItem("user_name") + '<b class="caret"></b>';
+            out_toplinks += '<i class="fa fa-user fa-fw"></i>' + email + '<b class="caret"></b>';
             out_toplinks += '</a>';
             out_toplinks += '<ul class="dropdown-menu dropdown-user">';
             out_toplinks += '<li><a href="#"><i class="fa fa-user fa-fw"></i>マイページ</a>';
             out_toplinks += '</li>';
-            out_toplinks += '<li><a href="#" onclick="logout()"><i class="fa fa-sign-out fa-fw"></i>ログアウト</a>';
+            out_toplinks += '<li><a href="#" onclick="signOut()"><i class="fa fa-sign-out fa-fw"></i>ログアウト</a>';
             out_toplinks += '</li>';
             out_toplinks += '</ul>';
             out_toplinks += '</li>';
@@ -518,9 +533,14 @@
             $(obj).next('ul').slideToggle();
         }
 
-        function logout() {
-            localStorage.clear();
-            window.location.href = "login.html"
+        // ログアウト
+        function signOut() {
+            firebase.auth().signOut().then(function() {
+                window.location.href = "login.html";
+            }).catch(function(error) {
+                console.log(error);
+                alert("サインアウト失敗");
+            });
         }
 
         function showtime() {
