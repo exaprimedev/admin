@@ -96,7 +96,7 @@
                                 <div class="form-group" style="display: none;">
                                     <input class="form-control" id="attendannce_record_in_form_mail" name="entry.201600831" type="email">
                                 </div>
-                                <button type="submit" class="btn btn-info btn-lg btn-block">出勤</button>
+                                <button type="submit" class="btn btn-info btn-lg btn-block" id="btnIn">出勤</button>
                             </fieldset>
                         </form>
                     </div>
@@ -106,7 +106,7 @@
                                 <div class="form-group" style="display: none;">
                                     <input class="form-control" id="attendannce_record_out_form_mail" name="entry.1944725173" type="email">
                                 </div>
-                                <button type="submit" class="btn btn-success btn-lg btn-block">退勤</button>
+                                <button type="submit" class="btn btn-success btn-lg btn-block" id="btnOut">退勤</button>
                             </fieldset>
                         </form>
                     </div>
@@ -235,6 +235,7 @@
         };
         const url_pj = 'https://script.google.com/macros/s/AKfycbyPWuArH5REnTsv0CBBVh-EyVDfyOfgXzgBYJdKrvQpzKXMWyI/exec';
         const url_iw = 'https://script.google.com/macros/s/AKfycbwdDBd2Fckq0Lnzf2yZMTOxB-fWuE0_B4Rxl-0azNEqpdSyJ0kA/exec';
+        const url_atr = 'https://script.google.com/macros/s/AKfycbz4M2vKlT_VLl4vUSj3YASs9OhaedReWW-0T59u_Ij1v3W1BMw/exec';
         const url_attendannce_record_in_form = 'https://docs.google.com/forms/d/e/1FAIpQLSfUvu5sVp3xGOCoW04o0q_zcUMZFvMumAorfMpK-c9R8RnMOw/formResponse';
         const url_attendannce_record_out_form = 'https://docs.google.com/forms/d/e/1FAIpQLSdY7tSdAoLYvRUQFA8MhxBbkDpGXVbpjo3sSdMGetVLrw0GuQ/formResponse';
         const url_transportation_costs_form = 'https://docs.google.com/forms/d/e/1FAIpQLSeoAXl6SYjF2T1G3mfRQm5XFZrvKXmAugtL9kIV4gRKvoW78A/formResponse';
@@ -252,51 +253,89 @@
                     var menu_iw = '';
                     $.ajax({
                             type: 'GET',
-                            url: url_pj + '?sn=project_management',
+                            url: url_atr + '?sn=in&q=' + user.email,
                             dataType: 'jsonp',
                             jsonpCallback: 'jsondata'
                         })
                         .then(
                             function(data) {
-                                menu_pj = createMenuHTML('pj', data);
-                                $("#row_project_summary_contents").html(createPanelHTML(data));
+                                console.log(data);
+                                // 出勤ボタン制御
+                                atrBtnControl("In", data);
                                 $.ajax({
                                         type: 'GET',
-                                        url: url_iw + '?sn=inner_work_management',
+                                        url: url_atr + '?sn=out&q=' + user.email,
                                         dataType: 'jsonp',
                                         jsonpCallback: 'jsondata'
                                     })
                                     .then(
                                         function(data) {
-                                            menu_iw = createMenuHTML('iw', data);
-                                            $("#side-menu").html(menu_home + menu_pj + menu_iw);
+                                            console.log(data);
+                                            // 退勤ボタン制御
+                                            atrBtnControl("Out", data);
                                             $.ajax({
                                                     type: 'GET',
-                                                    url: url_iw + '?sn=notifications',
+                                                    url: url_pj + '?sn=project_management',
                                                     dataType: 'jsonp',
                                                     jsonpCallback: 'jsondata'
                                                 })
                                                 .then(
                                                     function(data) {
-                                                        $("#row_news_contents").html(createNewsHTML(data));
+                                                        // サイトメニュー作成：プロジェクト管理
+                                                        menu_pj = createMenuHTML('pj', data);
+                                                        // TOPページコンテンツ作成描画：プロジェクト管理
+                                                        $("#row_project_summary_contents").html(createPanelHTML(data));
+                                                        $.ajax({
+                                                                type: 'GET',
+                                                                url: url_iw + '?sn=inner_work_management',
+                                                                dataType: 'jsonp',
+                                                                jsonpCallback: 'jsondata'
+                                                            })
+                                                            .then(
+                                                                function(data) {
+                                                                    // サイトメニュー作成：社内業務管理
+                                                                    menu_iw = createMenuHTML('iw', data);
+                                                                    // サイトメニュー描画
+                                                                    $("#side-menu").html(menu_home + menu_pj + menu_iw);
+                                                                    $.ajax({
+                                                                            type: 'GET',
+                                                                            url: url_iw + '?sn=notifications',
+                                                                            dataType: 'jsonp',
+                                                                            jsonpCallback: 'jsondata'
+                                                                        })
+                                                                        .then(
+                                                                            function(data) {
+                                                                                // TOPページコンテンツ作成描画：お知らせ
+                                                                                $("#row_news_contents").html(createNewsHTML(data));
+                                                                                console.log('success');
+                                                                            },
+                                                                            function() {
+                                                                                console.log('error');
+                                                                            }
+                                                                        );
+                                                                    console.log('success');
+                                                                },
+                                                                function() {
+                                                                    console.log('error');
+                                                                }
+                                                            );
                                                         console.log('success');
                                                     },
                                                     function() {
                                                         console.log('error');
                                                     }
                                                 );
-                                            console.log('success');
                                         },
                                         function() {
                                             console.log('error');
                                         }
                                     );
-                                console.log('success');
                             },
                             function() {
                                 console.log('error');
                             }
                         );
+
                     $('.datepicker').datepicker({
                         format: "yyyy/mm/dd",
                         language: 'ja',
@@ -313,7 +352,8 @@
                             dataType: "xml",
                             statusCode: {
                                 0: function() {
-                                    alert("出勤しました。")
+                                    alert("出勤しました。");
+                                    $("#btnIn").prop("disabled", true);
                                 },
                                 200: function() {
                                     alert("errorMsg")
@@ -334,6 +374,7 @@
                             statusCode: {
                                 0: function() {
                                     alert("退勤しました。")
+                                    $("#btnOut").prop("disabled", true);
                                 },
                                 200: function() {
                                     alert("errorMsg")
@@ -533,6 +574,14 @@
             $(obj).next('ul').slideToggle();
         }
 
+        function atrBtnControl(status, data) {
+            for (var idx in data) {
+                if (data[idx].タイムスタンプ.substr(0, 10) == $('#datetime').html().substr(0, 10)) {
+                    $("#btn" + status).prop("disabled", true);
+                }
+            }
+        }
+
         // ログアウト
         function signOut() {
             firebase.auth().signOut().then(function() {
@@ -546,8 +595,9 @@
         function showtime() {
             var today = new Date();
             $weekday = ['日', '月', '火', '水', '木', '金', '土'];
-            month = today.getMonth() + 1;
-            $('#datetime').html(today.getFullYear() + "/" + month + "/" + today.getDate() + "(" + $weekday[today.getDay()] + ") " + today.getHours() + ":" + ('0' + today.getMinutes()).slice(-2) + ":" + ('0' + today.getSeconds()).slice(-2));
+            month = ("00" + (today.getMonth() + 1)).slice(-2);
+            date = ("00" + today.getDate()).slice(-2);
+            $('#datetime').html(today.getFullYear() + "-" + month + "-" + date + "(" + $weekday[today.getDay()] + ") " + today.getHours() + ":" + ('0' + today.getMinutes()).slice(-2) + ":" + ('0' + today.getSeconds()).slice(-2));
         }
         setInterval(showtime, 1000);
     </script>
