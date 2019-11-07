@@ -224,6 +224,9 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/locales/bootstrap-datepicker.ja.min.js"></script>
 
+    <!-- オーバーレイのCDN -->
+    <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.6/dist/loadingoverlay.min.js"></script>
+
     <!-- firebaseのスクリプト -->
     <script src="https://www.gstatic.com/firebasejs/4.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/4.10.1/firebase-auth.js"></script>
@@ -245,6 +248,7 @@
                 if (user) {
                     // ログイン認証済
                     console.log('auth user', user);
+                    $.LoadingOverlay("show");
                     $("#attendannce_record_in_form_mail").val(user.email);
                     $("#attendannce_record_out_form_mail").val(user.email);
                     $("#top-links").html(createTopLinksHTML(user.email));
@@ -307,6 +311,7 @@
                                                                             function(data) {
                                                                                 // TOPページコンテンツ作成描画：お知らせ
                                                                                 $("#row_news_contents").html(createNewsHTML(data));
+                                                                                $.LoadingOverlay("hide");
                                                                                 console.log('success');
                                                                             },
                                                                             function() {
