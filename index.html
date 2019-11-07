@@ -436,16 +436,14 @@
             $("#row_dataTables_title").show();
             $("#row_dataTables").show();
             createDataTables(book, sheet_name, sheet_name_jp, link);
-
             if (type == "form") {
                 $("#row_" + sheet_name + "_contents").show();
-                $("#transportation_costs_form_mail").val(localStorage.getItem("mail"));
             }
         }
 
         function createTopLinksHTML(email) {
             var out_toplinks = '<li>';
-            out_toplinks += '<a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="true">';
+            out_toplinks += '<a class="dropdown-toggle" id="userId" data-toggle="dropdown" href="#" aria-expanded="true">';
             out_toplinks += '<i class="fa fa-user fa-fw"></i>' + email + '<b class="caret"></b>';
             out_toplinks += '</a>';
             out_toplinks += '<ul class="dropdown-menu dropdown-user">';
@@ -528,17 +526,25 @@
 
         function createDataTables(book, sheet_name, sheet_name_jp, link) {
             var url;
+            var btnSheetLink = '<span>' + sheet_name_jp + '</span>';
+            if (sheet_name != "transportation_costs") {
+                btnSheetLink = '<span>' + sheet_name_jp + '</span><span class="pull-right"><a class="btn btn-primary btn-sm" id="btnSheetLink" target="_blank" href="' + link + '">更新</a></span><div class="clearfix"></div>';
+            }
+
             if (book == "pj") {
                 url = url_pj;
                 $("#row_dataTables_title").html('<div class="col-lg-12"><h3 class="page-header">プロジェクト管理</h3></div>');
             } else {
-                url = url_iw;
+                url = url_iw + '?sn=' + sheet_name;
                 $("#row_dataTables_title").html('<div class="col-lg-12"><h3 class="page-header">社内業務管理</h3></div>');
+                if (sheet_name == "transportation_costs") {
+                    url += '&q=' + $("#userId")[0].innerText;
+                }
             }
-            $("#dataTables_panel_header").html('<span>' + sheet_name_jp + '</span><span class="pull-right"><a class="btn btn-primary btn-sm" target="_blank" href="' + link + '">更新</a></span><div class="clearfix"></div>');
+            $("#dataTables_panel_header").html(btnSheetLink);
             $.ajax({
                     type: 'GET',
-                    url: url + '?sn=' + sheet_name,
+                    url: url,
                     dataType: 'jsonp',
                     jsonpCallback: 'jsondata'
                 })
