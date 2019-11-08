@@ -532,7 +532,7 @@
             }
 
             if (book == "pj") {
-                url = url_pj;
+                url = url_pj + '?sn=' + sheet_name;
                 $("#row_dataTables_title").html('<div class="col-lg-12"><h3 class="page-header">プロジェクト管理</h3></div>');
             } else {
                 url = url_iw + '?sn=' + sheet_name;
