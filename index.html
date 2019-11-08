@@ -111,6 +111,24 @@
                         </form>
                     </div>
                 </div>
+                <div class="row" id="row_mypage_title" style="display: none;">
+                    <div class="col-lg-12">
+                        <h3 class="page-header">マイページ</h3>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" id="mypage_panel_header">
+                            </div>
+                            <!-- /.panel-heading -->
+                            <div class="panel-body">
+                                <div class="row table-responsive" id="mypage_panel_contents">
+                                </div>
+                            </div>
+                            <!-- /.panel-body -->
+                        </div>
+                        <!-- /.panel -->
+                    </div>
+                </div>
                 <div class="row" id="row_news_title">
                     <div class="col-lg-12">
                         <h3 class="page-header">お知らせ</h3>
@@ -266,6 +284,7 @@
                                 console.log(data);
                                 // 出勤ボタン制御
                                 atrBtnControl("In", data);
+                                createAtrMonth();
                                 $.ajax({
                                         type: 'GET',
                                         url: url_atr + '?sn=out&q=' + user.email,
@@ -601,6 +620,45 @@
                 console.log(error);
                 alert("サインアウト失敗");
             });
+        }
+
+        function createAtrMonth() {
+            const weeks = ['日', '月', '火', '水', '木', '金', '土']
+            const date = new Date()
+            const year = date.getFullYear()
+            const month = date.getMonth() + 1
+            const startDate = new Date(year, month - 1, 1) // 月の最初の日を取得
+            const endDate = new Date(year, month, 0) // 月の最後の日を取得
+            const endDayCount = endDate.getDate() // 月の末日
+            const startDay = startDate.getDay() // 月の最初の日の曜日を取得
+            var calendarHtml = '' // HTMLを組み立てる変数
+
+            calendarHtml += '<table class="table table-bordered table-hover">'
+            calendarHtml += '<thead><tr>'
+            calendarHtml += '<td>日付</td>'
+            calendarHtml += '<td>開始</td>'
+            calendarHtml += '<td>終了</td>'
+            calendarHtml += '<td>実働</td>'
+            calendarHtml += '<td>メモ</td>'
+            calendarHtml += '</tr></thead><tbody>'
+            for (var idx = 1; idx < endDayCount; idx++) {
+                var day = weeks[new Date(year + month + ("00" + idx).slice(-2)).getDay()]
+                if (day == "土") {
+                    calendarHtml += '<tr class="info">'
+                } else if (day == "日") {
+                    calendarHtml += '<tr class="danger">'
+                } else {
+                    calendarHtml += '<tr>'
+                }
+                calendarHtml += '<td>' + month + '/' + idx + '(' + day + ')' + '</td>'
+                calendarHtml += '<td id="in' + year + month + ("00" + idx).slice(-2) + '"></td>'
+                calendarHtml += '<td id="out' + year + month + ("00" + idx).slice(-2) + '"></td>'
+                calendarHtml += '<td id="sum' + year + month + ("00" + idx).slice(-2) + '"></td>'
+                calendarHtml += '<td id="total' + year + month + ("00" + idx).slice(-2) + '"></td>'
+                calendarHtml += '</tr>'
+            }
+            calendarHtml += '</tbody></table>'
+            $("#mypage_panel_contents").html(calendarHtml);
         }
 
         function showtime() {
