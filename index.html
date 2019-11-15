@@ -238,7 +238,7 @@
     <script src="https://www.gstatic.com/firebasejs/4.10.1/firebase-auth.js"></script>
 
     <script>
-        var config = {
+        const config = {
             apiKey: "AIzaSyArEg2nQofEnSJAdHhq86VsQHugfD-vfb8",
             authDomain: "exaprime-dev-admin.firebaseapp.com",
         };
@@ -248,6 +248,70 @@
         const url_attendannce_record_in_form = 'https://docs.google.com/forms/d/e/1FAIpQLSfUvu5sVp3xGOCoW04o0q_zcUMZFvMumAorfMpK-c9R8RnMOw/formResponse';
         const url_attendannce_record_out_form = 'https://docs.google.com/forms/d/e/1FAIpQLSdY7tSdAoLYvRUQFA8MhxBbkDpGXVbpjo3sSdMGetVLrw0GuQ/formResponse';
         const url_transportation_costs_form = 'https://docs.google.com/forms/d/e/1FAIpQLSeoAXl6SYjF2T1G3mfRQm5XFZrvKXmAugtL9kIV4gRKvoW78A/formResponse';
+        const holidayList = [{
+            "holiday": "2019/11/3",
+            "name": "文化の日"
+        }, {
+            "holiday": "2019/11/4",
+            "name": "休日"
+        }, {
+            "holiday": "2019/11/23",
+            "name": "勤労感謝の日"
+        }, {
+            "holiday": "2020/1/1",
+            "name": "元日"
+        }, {
+            "holiday": "2020/1/13",
+            "name": "成人の日"
+        }, {
+            "holiday": "2020/2/11",
+            "name": "建国記念の日"
+        }, {
+            "holiday": "2020/2/23",
+            "name": "天皇誕生日"
+        }, {
+            "holiday": "2020/2/24",
+            "name": "休日"
+        }, {
+            "holiday": "2020/3/20",
+            "name": "春分の日"
+        }, {
+            "holiday": "2020/4/29",
+            "name": "昭和の日"
+        }, {
+            "holiday": "2020/5/3",
+            "name": "憲法記念日"
+        }, {
+            "holiday": "2020/5/4",
+            "name": "みどりの日"
+        }, {
+            "holiday": "2020/5/5",
+            "name": "こどもの日"
+        }, {
+            "holiday": "2020/5/6",
+            "name": "休日"
+        }, {
+            "holiday": "2020/7/23",
+            "name": "海の日"
+        }, {
+            "holiday": "2020/7/24",
+            "name": "スポーツの日"
+        }, {
+            "holiday": "2020/8/10",
+            "name": "山の日"
+        }, {
+            "holiday": "2020/9/21",
+            "name": "敬老の日"
+        }, {
+            "holiday": "2020/9/22",
+            "name": "秋分の日"
+        }, {
+            "holiday": "2020/11/3",
+            "name": "文化の日"
+        }, {
+            "holiday": "2020/11/23",
+            "name": "勤労感謝の日"
+        }];
         $(function() {
             firebase.initializeApp(config);
             firebase.auth().onAuthStateChanged(function(user) {
@@ -673,10 +737,10 @@
             const date = new Date()
             const year = date.getFullYear()
             const month = date.getMonth() + 1
-            const startDate = new Date(year, month - 1, 1) // 月の最初の日を取得
-            const endDate = new Date(year, month, 0) // 月の最後の日を取得
-            const endDayCount = endDate.getDate() // 月の末日
-            const startDay = startDate.getDay() // 月の最初の日の曜日を取得
+            const startDate = new Date(year, month - 1, 1)
+            const endDate = new Date(year, month, 0)
+            const endDayCount = endDate.getDate()
+            const startDay = startDate.getDay()
             var calendarHtml = '<div class="col-lg-12">'
             calendarHtml += '<div class="panel panel-default">'
             calendarHtml += '<div class="panel-heading">' + year + '年' + month + '月'
@@ -693,7 +757,7 @@
             calendarHtml += '</tr></thead>'
             calendarHtml += '<tfoot><tr>'
             calendarHtml += '<th colspan="3" style="text-align: right;">合計</th>'
-            calendarHtml += '<th id="total"></th>'
+            calendarHtml += '<th id="total" style="text-align: right;"></th>'
             calendarHtml += '<th>h</th>'
             calendarHtml += '</tr></tfoot>'
             calendarHtml += '<tbody>'
@@ -703,15 +767,17 @@
                     calendarHtml += '<tr class="info">'
                 } else if (day == "日") {
                     calendarHtml += '<tr class="danger">'
+                } else if (getHoliday(year + "/" + month + "/" + idx) != "") {
+                    calendarHtml += '<tr class="danger">'
                 } else {
                     calendarHtml += '<tr>'
                 }
                 var yyyymmddId = year + "-" + month + "-" + ("00" + idx).slice(-2)
                 calendarHtml += '<td>' + month + '/' + ("00" + idx).slice(-2) + '(' + day + ')' + '</td>'
-                calendarHtml += '<td id="in' + yyyymmddId + '"></td>'
-                calendarHtml += '<td id="out' + yyyymmddId + '"></td>'
-                calendarHtml += '<td id="subtotal' + yyyymmddId + '"></td>'
-                calendarHtml += '<td id="memo' + yyyymmddId + '"></td>'
+                calendarHtml += '<td id="in' + yyyymmddId + '" style="text-align: right;"></td>'
+                calendarHtml += '<td id="out' + yyyymmddId + '" style="text-align: right;"></td>'
+                calendarHtml += '<td id="subtotal' + yyyymmddId + '" style="text-align: right;"></td>'
+                calendarHtml += '<td id="memo' + yyyymmddId + '">' + getHoliday(year + "/" + month + "/" + idx) + '</td>'
                 calendarHtml += '</tr>'
             }
             calendarHtml += '</tbody></table>'
@@ -721,6 +787,19 @@
             calendarHtml += '</div>'
 
             $("#row_mypage_contents").html(calendarHtml);
+        }
+
+        function getHoliday(target) {
+            var holiday = '';
+            var result = $.grep(holidayList,
+                function(obj, idx) {
+                    return (obj.holiday == target);
+                }
+            );
+            if (result.length != 0) {
+                holiday = result[0].name
+            }
+            return holiday
         }
 
         function showtime() {
