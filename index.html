@@ -323,11 +323,13 @@
             firebase.auth().onAuthStateChanged(function(user) {
                 if (user) {
                     // ログイン認証済
-                    console.log('auth user', user);
+                    console.log(new Date() + ' type：auth success：auth user', user);
                     $.LoadingOverlay("show");
                     $("#attendannce_record_in_form_mail").val(user.email);
                     $("#attendannce_record_out_form_mail").val(user.email);
+                    $("#transportation_costs_form_mail").val(user.email);
                     $("#top-links").html(createTopLinksHTML(user.email));
+                    console.log(new Date() + ' type：html success：createTopLinksHTML');
                     var menu_home = '<li><a href="index.html" class="active"><i class="fa fa-dashboard fa-fw"></i> Home</a></li>';
                     var menu_pj = '';
                     var menu_iw = '';
@@ -339,7 +341,7 @@
                         })
                         .then(
                             function(user_list) {
-                                console.log('success：sn=user_list');
+                                console.log(new Date() + ' type：ajax success：sn=user_list');
                                 $.ajax({
                                         type: 'GET',
                                         url: url_atr + '?sn=in&q=' + user.email,
@@ -348,11 +350,13 @@
                                     })
                                     .then(
                                         function(in_user) {
+                                            console.log(new Date() + ' type：ajax success：sn=in');
                                             // 出勤ボタン制御
                                             atrBtnControl("In", in_user);
+                                            console.log(new Date() + ' type：html success：atrBtnControl in');
                                             // マイページ：当月勤怠表HTML作成
                                             createAtrMonthHTML(user.email, user_list);
-                                            console.log('success：sn=in');
+                                            console.log(new Date() + ' type：html success：createAtrMonthHTML');
                                             $.ajax({
                                                     type: 'GET',
                                                     url: url_atr + '?sn=out&q=' + user.email,
@@ -361,10 +365,10 @@
                                                 })
                                                 .then(
                                                     function(out_user) {
-                                                        console.log(out_user);
+                                                        console.log(new Date() + ' type：ajax success：sn=out');
                                                         // 退勤ボタン制御
                                                         atrBtnControl("Out", out_user);
-                                                        console.log('success：sn=out');
+                                                        console.log(new Date() + ' type：html success：atrBtnControl out');
                                                         $.ajax({
                                                                 type: 'GET',
                                                                 url: url_pj + '?sn=project_management',
@@ -373,11 +377,13 @@
                                                             })
                                                             .then(
                                                                 function(project_management) {
+                                                                    console.log(new Date() + ' type：ajax success：sn=project_management');
                                                                     // サイトメニュー作成：プロジェクト管理
                                                                     menu_pj = createMenuHTML('pj', project_management);
+                                                                    console.log(new Date() + ' type：html success：createMenuHTML project_management');
                                                                     // TOPページコンテンツ作成描画：プロジェクト管理
                                                                     $("#row_project_summary_contents").html(createPanelHTML(project_management));
-                                                                    console.log('success：sn=project_management');
+                                                                    console.log(new Date() + ' type：html success：createPanelHTML');
                                                                     $.ajax({
                                                                             type: 'GET',
                                                                             url: url_iw + '?sn=inner_work_management',
@@ -386,11 +392,12 @@
                                                                         })
                                                                         .then(
                                                                             function(inner_work_management) {
+                                                                                console.log(new Date() + ' type：ajax success：sn=inner_work_management');
                                                                                 // サイトメニュー作成：社内業務管理
                                                                                 menu_iw = createMenuHTML('iw', inner_work_management);
                                                                                 // サイトメニュー描画
                                                                                 $("#side-menu").html(menu_home + menu_pj + menu_iw);
-                                                                                console.log('success：sn=inner_work_management');
+                                                                                console.log(new Date() + ' type：html success：createMenuHTML inner_work_management');
                                                                                 $.ajax({
                                                                                         type: 'GET',
                                                                                         url: url_iw + '?sn=notifications',
@@ -399,22 +406,21 @@
                                                                                     })
                                                                                     .then(
                                                                                         function(notifications) {
+                                                                                            console.log(new Date() + ' type：ajax success：sn=notifications');
                                                                                             // TOPページコンテンツ作成描画：お知らせ
                                                                                             $("#row_news_contents").html(createNewsHTML(notifications));
+                                                                                            console.log(new Date() + ' type：html success：createNewsHTML');
                                                                                             $.LoadingOverlay("hide");
-                                                                                            console.log('success：sn=notifications');
                                                                                         },
                                                                                         function() {
                                                                                             console.log('error：sn=notifications');
                                                                                         }
                                                                                     );
-                                                                                console.log('success');
                                                                             },
                                                                             function() {
                                                                                 console.log('error：sn=inner_work_management');
                                                                             }
                                                                         );
-                                                                    console.log('success');
                                                                 },
                                                                 function() {
                                                                     console.log('error：sn=project_management');
