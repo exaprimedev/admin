@@ -689,7 +689,7 @@
 
         function atrBtnControl(status, data) {
             for (var idx in data) {
-                if (data[idx].タイムスタンプ.substr(0, 10) == $('#datetime').html().substr(0, 10)) {
+                if (new Date(data[idx].タイムスタンプ).toLocaleString("ja").split(" ")[0] == new Date($('#datetime').html().substr(0, 10)).toLocaleString("ja").split(" ")[0]) {
                     $("#btn" + status).prop("disabled", true);
                 }
             }
@@ -718,9 +718,10 @@
                         }
                         // 開始の書き込み
                         for (var idx in data) {
-                            var arrTs = data[idx].タイムスタンプ.split("T");
+                            var arrTs = new Date(data[idx].タイムスタンプ).toLocaleString("ja").split(" ");
                             var arrTshhmm = arrTs[1].split(":");
-                            $("#in" + arrTs[0]).html(Number(arrTshhmm[0]) + 9 + ":" + arrTshhmm[1])
+                            var arrTsyyyymmdd = arrTs[0].split("/");
+                            $("#in" + arrTsyyyymmdd[0] + "-" + ("00" + arrTsyyyymmdd[1]).slice(-2) + "-" + ("00" + arrTsyyyymmdd[2]).slice(-2)).html(arrTshhmm[0] + ":" + arrTshhmm[1])
                         }
                         $.ajax({
                                 type: 'GET',
@@ -732,9 +733,10 @@
                                 function(data) {
                                     // 終了の書き込み
                                     for (var idx in data) {
-                                        var arrTs = data[idx].タイムスタンプ.split("T");
+                                        var arrTs = new Date(data[idx].タイムスタンプ).toLocaleString("ja").split(" ");
                                         var arrTshhmm = arrTs[1].split(":");
-                                        $("#out" + arrTs[0]).html(Number(arrTshhmm[0]) + 9 + ":" + arrTshhmm[1])
+                                        var arrTsyyyymmdd = arrTs[0].split("/");
+                                        $("#out" + arrTsyyyymmdd[0] + "-" + ("00" + arrTsyyyymmdd[1]).slice(-2) + "-" + ("00" + arrTsyyyymmdd[2]).slice(-2)).html(arrTshhmm[0] + ":" + arrTshhmm[1])
                                     }
                                     // 実働計算
                                     calcTotal();
