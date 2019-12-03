@@ -355,7 +355,7 @@
                                             atrBtnControl("In", in_user);
                                             console.log(new Date() + ' type：html success：atrBtnControl in');
                                             // マイページ：当月勤怠表HTML作成
-                                            createAtrMonthHTML(user.email, user_list);
+                                            createAtrMonthHTML(user.email, user_list, 0, 0);
                                             console.log(new Date() + ' type：html success：createAtrMonthHTML');
                                             $.ajax({
                                                     type: 'GET',
@@ -799,10 +799,10 @@
             });
         }
 
-        function createAtrMonthHTML(email, userList) {
+        function createAtrMonthHTML(email, userList, targetM, initF) {
             const date = new Date()
             const year = date.getFullYear()
-            const month = date.getMonth() + 1
+            const month = date.getMonth() + 1 + targetM
             const startDate = new Date(year, month - 1, 1)
             const endDate = new Date(year, month, 0)
             const endDayCount = endDate.getDate()
@@ -810,14 +810,22 @@
             var calendarHtml = '<div class="col-lg-12">'
             calendarHtml += '<div class="panel panel-default">'
             calendarHtml += '<div class="panel-heading">'
-            calendarHtml += '<span style="font-size:20px">' + year + '年' + month + '月</span><span class="pull-right"><a class="btn btn-primary btn-sm" id="btnSheetLink" href="#" onclick="downloadExcel()" disabled>ダウンロード</a></span><div class="clearfix"></div>'
+            if (targetM != 0) {
+                calendarHtml += '<span style="font-size:20px">' + year + '年' + month + '月<a href="#" onclick="createAtrMonthHTML(\'' + email + '\',' + null + ',0)">　>></a></span><span class="pull-right"><a class="btn btn-primary btn-sm" id="btnSheetLink" href="#" onclick="downloadExcel()" disabled>ダウンロード</a></span><div class="clearfix"></div>'
+            } else {
+                calendarHtml += '<span style="font-size:20px"><a href="#" onclick="createAtrMonthHTML(\'' + email + '\',' + null + ',-1)"><<　</a>' + year + '年' + month + '月</span><span class="pull-right"><a class="btn btn-primary btn-sm" id="btnSheetLink" href="#" onclick="downloadExcel()" disabled>ダウンロード</a></span><div class="clearfix"></div>'
+            }
             calendarHtml += '</div>'
             calendarHtml += '<div class="panel-body">'
             calendarHtml += '<div class="table-responsive" id="mypage_panel_contents">'
             if ($.inArray(email, admin_user) !== -1) {
                 calendarHtml += '<select class="form-control" id="userSelectbox" onchange="renderMyPage(this[this.selectedIndex].innerText)">'
-                for (var idx in userList) {
-                    calendarHtml += '<option>' + userList[idx].email + '</option>';
+                if (initF != 0) {
+                    calendarHtml += $("#userSelectbox").html();
+                } else {
+                    for (var idx in userList) {
+                        calendarHtml += '<option>' + userList[idx].email + '</option>';
+                    }
                 }
                 calendarHtml += '</select><br>';
             }
@@ -861,6 +869,9 @@
             calendarHtml += '</div>'
 
             $("#row_mypage_contents").html(calendarHtml);
+            if (initF != 0) {
+                renderMyPage(email);
+            }
         }
 
         function getHoliday(target) {
