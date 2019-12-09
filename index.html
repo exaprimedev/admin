@@ -300,8 +300,11 @@
     <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.6/dist/loadingoverlay.min.js"></script>
 
     <!-- excelダウンロードのCDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.9.10/xlsx.full.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.3/FileSaver.min.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/xlsx/dist/shim.min.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+
+    <script type="text/javascript" src="https://unpkg.com/blob.js@1.0.1/Blob.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/file-saver@1.3.3/FileSaver.js"></script>
 
     <!-- firebaseのスクリプト -->
     <script src="https://www.gstatic.com/firebasejs/4.10.1/firebase-app.js"></script>
@@ -312,7 +315,7 @@
             apiKey: "AIzaSyArEg2nQofEnSJAdHhq86VsQHugfD-vfb8",
             authDomain: "exaprime-dev-admin.firebaseapp.com",
         };
-        const admin_user = ["hiroshi.katou@exaprime.co.jp", "hideaki.hazama@exaprime.co.jp", "takashi.miura@exaprime.co.jp"];
+        const admin_user = ["hiroshi.katou@exaprime.co.jp", "takashi.miura@exaprime.co.jp"];
         const url_user = 'https://script.google.com/macros/s/AKfycbztaNYCMJKZczlxj5nXD2L1Ac-nR9thkeLOyqz-BsXAs5iBNrc/exec';
         const url_pj = 'https://script.google.com/macros/s/AKfycbyPWuArH5REnTsv0CBBVh-EyVDfyOfgXzgBYJdKrvQpzKXMWyI/exec';
         const url_iw = 'https://script.google.com/macros/s/AKfycbwdDBd2Fckq0Lnzf2yZMTOxB-fWuE0_B4Rxl-0azNEqpdSyJ0kA/exec';
@@ -852,9 +855,6 @@
             $("#total").html(Math.floor(tmpmmtotal / 60) + ":" + tmpmmtotal % 60);
         }
 
-        // excelダウンロード
-        function downloadExcel() {}
-
         // ログアウト
         function signOut() {
             firebase.auth().signOut().then(function() {
@@ -877,24 +877,24 @@
             calendarHtml += '<div class="panel panel-default">'
             calendarHtml += '<div class="panel-heading">'
             if (targetM != 0) {
-                calendarHtml += '<span style="font-size:20px">' + year + '年' + month + '月<a href="#" onclick="createAtrMonthHTML(\'' + email + '\',' + null + ',0)">　>></a></span><span class="pull-right"><a class="btn btn-primary btn-sm" id="btnSheetLink" href="#" onclick="downloadExcel()" disabled>ダウンロード</a></span><div class="clearfix"></div>'
+                calendarHtml += '<span style="font-size:20px" id="atrMonth_header">' + year + '年' + month + '月<a href="#" onclick="createAtrMonthHTML(\'' + email + '\',' + null + ',0)">　>></a></span><span class="pull-right"><a class="btn btn-primary btn-sm" id="btnSheetLink" href="#" onclick="exportExcel(\'xlsx\');">ダウンロード</a></span><div class="clearfix"></div>'
             } else {
-                calendarHtml += '<span style="font-size:20px"><a href="#" onclick="createAtrMonthHTML(\'' + email + '\',' + null + ',-1)"><<　</a>' + year + '年' + month + '月</span><span class="pull-right"><a class="btn btn-primary btn-sm" id="btnSheetLink" href="#" onclick="downloadExcel()" disabled>ダウンロード</a></span><div class="clearfix"></div>'
+                calendarHtml += '<span style="font-size:20px" id="atrMonth_header"><a href="#" onclick="createAtrMonthHTML(\'' + email + '\',' + null + ',-1)"><<　</a>' + year + '年' + month + '月</span><span class="pull-right"><a class="btn btn-primary btn-sm" id="btnSheetLink" href="#" onclick="exportExcel(\'xlsx\');">ダウンロード</a></span><div class="clearfix"></div>'
             }
             calendarHtml += '</div>'
             calendarHtml += '<div class="panel-body">'
             calendarHtml += '<div class="table-responsive" id="mypage_panel_contents">'
+            calendarHtml += '<select class="form-control" id="userSelectbox" onchange="renderMyPage(this[this.selectedIndex].innerText)">'
             if ($.inArray(email, admin_user) !== -1) {
-                calendarHtml += '<select class="form-control" id="userSelectbox" onchange="renderMyPage(this[this.selectedIndex].innerText)">'
                 if (initF != 0) {
-                    calendarHtml += $("#userSelectbox").html();
-                } else {
                     for (var idx in userList) {
                         calendarHtml += '<option>' + userList[idx].email + '</option>';
                     }
                 }
-                calendarHtml += '</select><br>';
+            } else {
+                calendarHtml += '<option>' + email + '</option>';
             }
+            calendarHtml += '</select><br>';
             calendarHtml += '<table class="table table-bordered table-hover table-sm" id="tblAtr">'
             calendarHtml += '<thead><tr>'
             calendarHtml += '<th style="width:80px;">日付</th>'
@@ -938,6 +938,20 @@
             if (initF != 0) {
                 renderMyPage(email);
             }
+        }
+
+        function exportExcel(type, fn, dl) {
+            var elt = document.getElementById('tblAtr');
+            var wb = XLSX.utils.table_to_book(elt, {
+                sheet: $("#atrMonth_header")[0].innerText
+            });
+            return dl ?
+                XLSX.write(wb, {
+                    bookType: type,
+                    bookSST: true,
+                    type: 'base64'
+                }) :
+                XLSX.writeFile(wb, fn || ($("#atrMonth_header")[0].innerText + '_迫間.' + (type || 'xlsx')));
         }
 
         function getHoliday(target) {
