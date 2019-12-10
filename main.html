@@ -75,16 +75,6 @@
             <div class="navbar-default sidebar" role="navigation">
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
-                        <li><a href="index.html" class="active"><i class="fa fa-dashboard fa-fw"></i>Home</a></li>
-                        <li><a href="#" onclick="toggleMenu(this); return false;"><i class="fa fa-sitemap fa-fw"></i> マイページ<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level" style="display: none;">
-                                <li><a href="#" onclick=""><i class="fa fa-user fa-fw"></i> アカウント</a></li>
-                                <li><a href="#" onclick=""><i class="fa fa-table fa-fw"></i> 勤務表</a></li>
-                                <li><a href="#" onclick=""><i class="fa fa-money fa-fw"></i> 経費精算</a></li>
-                                <li><a href="#" onclick=""><i class="fa fa-list-ul fa-fw"></i> スキルシート</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="main.html" class="active"><i class="fa fa-dashboard fa-fw"></i> メインメニュー</a></li>
                     </ul>
                 </div>
             </div>
@@ -121,34 +111,114 @@
                         </form>
                     </div>
                 </div>
-                <br>
-                <div class="row" id="row_line_menu">
-                    <div class="col-lg-12">
-                        <button type="button" class="btn btn-warning btn-lg btn-block">マイページ</button>
-                        <div class="list-group">
-                            <a href="#" class="list-group-item">
-                                <i class="fa fa-user fa-fw"></i> アカウント
-                            </a>
-                            <a href="#" class="list-group-item">
-                                <i class="fa fa-table fa-fw"></i> 勤務表
-                            </a>
-                            <a href="#" class="list-group-item">
-                                <i class="fa fa-money fa-fw"></i> 経費精算
-                            </a>
-                            <a href="#" class="list-group-item">
-                                <i class="fa fa-list-ul fa-fw"></i> スキルシート
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <button type="button" class="btn btn-primary btn-lg btn-block">メインメニュー</button>
-
                 <div class="row" id="row_mypage_title" style="display: none;">
                     <div class="col-lg-12">
                         <h3 class="page-header">マイページ</h3>
                     </div>
                 </div>
                 <div class="row" id="row_mypage_contents" style="display: none;"></div>
+                <div class="row" id="row_news_title">
+                    <div class="col-lg-12">
+                        <h3 class="page-header">お知らせ</h3>
+                    </div>
+                </div>
+                <div class="row" id="row_news_contents">
+
+                </div>
+
+                <div class="row" id="row_docs_title" style="display: none;">
+                    <div class="col-lg-12">
+                        <h3 class="page-header">共有ドキュメント</h3>
+                    </div>
+                </div>
+                <div class="row" id="row_docs_contents" style="display: none;">
+                    <div class="col-lg-12">
+
+                        <div class="panel-group" id="accordion">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" class="">Collapsible Group Item #1</a>
+                                    </h4>
+                                </div>
+                                <div id="collapseOne" class="panel-collapse collapse in" aria-expanded="true" style="">
+                                    <div class="panel-body">
+                                        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
+                                        in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" class="collapsed" aria-expanded="false">Collapsible Group Item #2</a>
+                                    </h4>
+                                </div>
+                                <div id="collapseTwo" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
+                                    <div class="panel-body">
+                                        <div class="list-group">
+                                            <a target="_blank" href="https://drive.google.com/open?id=1fr4oT_PWqPbnb9C6-XYRK1z1LplGpmsq" class="list-group-item">
+                                                <i class="fa fa-file-pdf-o fa-fw"></i> セミナー_人工知能サミット2019
+                                                <span class="pull-right text-muted small"><em>yasuhiro.tojima@exaprime.co.jp</em>
+                                                </span>
+                                            </a>
+
+                                            <a target="_blank" href="https://drive.google.com/open?id=1bEErKJfAuYVeblvFukcPTX4s_84GKNua" class="list-group-item">
+                                                <i class="fa fa-file-pdf-o fa-fw"></i> 情報セキュリティについて
+                                                <span class="pull-right text-muted small"><em>keisuke.mani@exaprime.co.jp</em>
+                                                </span>
+                                            </a>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" class="collapsed" aria-expanded="false">Collapsible Group Item #3</a>
+                                    </h4>
+                                </div>
+                                <div id="collapseThree" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
+                                    <div class="panel-body">
+                                        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
+                                        in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="row" id="row_project_summary_title">
+                    <div class="col-lg-12">
+                        <h3 class="page-header">プロジェクト管理</h3>
+                    </div>
+                </div>
+                <div class="row" id="row_project_summary_contents"></div>
+
+                <!-- /.row -->
+
+                <div class="row" id="row_dataTables_title" style="display: none;">
+
+                </div>
+                <div class="row" id="row_dataTables" style="display: none;">
+                    <div class="col-lg-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" id="dataTables_panel_header">
+                            </div>
+                            <!-- /.panel-heading -->
+                            <div class="panel-body">
+                                <div class="table-responsive" id="output_dataTables">
+                                </div>
+                            </div>
+                            <!-- /.panel-body -->
+                        </div>
+                        <!-- /.panel -->
+                    </div>
+                    <!-- /.col-lg-12 -->
+                </div>
 
                 <div class="row" id="row_transportation_costs_contents" style="display: none;">
                     <div class="panel-body">
@@ -194,6 +264,9 @@
                                 <button type="submit" class="btn btn-success btn-block">申請</button>
                             </fieldset>
                         </form>
+                    </div>
+                    <div class="alert alert-success" style="display: none;">
+                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. <a href="#" class="alert-link">Alert Link</a>.
                     </div>
                 </div>
                 <!-- ... Your content goes here ... -->
@@ -244,6 +317,8 @@
         };
         const admin_user = ["hiroshi.katou@exaprime.co.jp", "takashi.miura@exaprime.co.jp"];
         const url_user = 'https://script.google.com/macros/s/AKfycbztaNYCMJKZczlxj5nXD2L1Ac-nR9thkeLOyqz-BsXAs5iBNrc/exec';
+        const url_pj = 'https://script.google.com/macros/s/AKfycbyPWuArH5REnTsv0CBBVh-EyVDfyOfgXzgBYJdKrvQpzKXMWyI/exec';
+        const url_iw = 'https://script.google.com/macros/s/AKfycbwdDBd2Fckq0Lnzf2yZMTOxB-fWuE0_B4Rxl-0azNEqpdSyJ0kA/exec';
         const url_atr = 'https://script.google.com/macros/s/AKfycbz4M2vKlT_VLl4vUSj3YASs9OhaedReWW-0T59u_Ij1v3W1BMw/exec';
         const url_attendannce_record_in_form = 'https://docs.google.com/forms/d/e/1FAIpQLSfUvu5sVp3xGOCoW04o0q_zcUMZFvMumAorfMpK-c9R8RnMOw/formResponse';
         const url_attendannce_record_out_form = 'https://docs.google.com/forms/d/e/1FAIpQLSdY7tSdAoLYvRUQFA8MhxBbkDpGXVbpjo3sSdMGetVLrw0GuQ/formResponse';
@@ -317,13 +392,16 @@
             firebase.auth().onAuthStateChanged(function(user) {
                 if (user) {
                     // ログイン認証済
-                    console.log(new Date() + ' type：auth success：auth user', user.email);
+                    console.log(new Date() + ' type：auth success：auth user', user);
+                    $.LoadingOverlay("show");
                     $("#attendannce_record_in_form_mail").val(user.email);
                     $("#attendannce_record_out_form_mail").val(user.email);
                     $("#transportation_costs_form_mail").val(user.email);
                     $("#top-links").html(createTopLinksHTML(user.email));
                     console.log(new Date() + ' type：html success：createTopLinksHTML');
                     var menu_home = '<li><a href="index.html" class="active"><i class="fa fa-dashboard fa-fw"></i> Home</a></li>';
+                    var menu_pj = '';
+                    var menu_iw = '';
                     $.ajax({
                             type: 'GET',
                             url: url_user + '?sn=user_list',
@@ -342,12 +420,12 @@
                                     .then(
                                         function(in_user) {
                                             console.log(new Date() + ' type：ajax success：sn=in');
-                                            // マイページ：当月勤怠表HTML作成
-                                            //createAtrMonthHTML(user.email, user_list, 0, 0);
-                                            console.log(new Date() + ' type：html success：createAtrMonthHTML');
                                             // 出勤ボタン制御
-                                            //atrBtnControl("In", in_user, user.email);
+                                            atrBtnControl("In", in_user);
                                             console.log(new Date() + ' type：html success：atrBtnControl in');
+                                            // マイページ：当月勤怠表HTML作成
+                                            createAtrMonthHTML(user.email, user_list, 0, 0);
+                                            console.log(new Date() + ' type：html success：createAtrMonthHTML');
                                             $.ajax({
                                                     type: 'GET',
                                                     url: url_atr + '?sn=out&q=' + user.email,
@@ -358,8 +436,65 @@
                                                     function(out_user) {
                                                         console.log(new Date() + ' type：ajax success：sn=out');
                                                         // 退勤ボタン制御
-                                                        //atrBtnControl("Out", out_user, user.email);
+                                                        atrBtnControl("Out", out_user);
                                                         console.log(new Date() + ' type：html success：atrBtnControl out');
+                                                        $.ajax({
+                                                                type: 'GET',
+                                                                url: url_pj + '?sn=project_management',
+                                                                dataType: 'jsonp',
+                                                                jsonpCallback: 'jsondata'
+                                                            })
+                                                            .then(
+                                                                function(project_management) {
+                                                                    console.log(new Date() + ' type：ajax success：sn=project_management');
+                                                                    // サイトメニュー作成：プロジェクト管理
+                                                                    menu_pj = createMenuHTML('pj', project_management);
+                                                                    console.log(new Date() + ' type：html success：createMenuHTML project_management');
+                                                                    // TOPページコンテンツ作成描画：プロジェクト管理
+                                                                    $("#row_project_summary_contents").html(createPanelHTML(project_management));
+                                                                    console.log(new Date() + ' type：html success：createPanelHTML');
+                                                                    $.ajax({
+                                                                            type: 'GET',
+                                                                            url: url_iw + '?sn=inner_work_management',
+                                                                            dataType: 'jsonp',
+                                                                            jsonpCallback: 'jsondata'
+                                                                        })
+                                                                        .then(
+                                                                            function(inner_work_management) {
+                                                                                console.log(new Date() + ' type：ajax success：sn=inner_work_management');
+                                                                                // サイトメニュー作成：社内業務管理
+                                                                                menu_iw = createMenuHTML('iw', inner_work_management);
+                                                                                // サイトメニュー描画
+                                                                                $("#side-menu").html(menu_home + menu_pj + menu_iw);
+                                                                                console.log(new Date() + ' type：html success：createMenuHTML inner_work_management');
+                                                                                $.ajax({
+                                                                                        type: 'GET',
+                                                                                        url: url_iw + '?sn=notifications',
+                                                                                        dataType: 'jsonp',
+                                                                                        jsonpCallback: 'jsondata'
+                                                                                    })
+                                                                                    .then(
+                                                                                        function(notifications) {
+                                                                                            console.log(new Date() + ' type：ajax success：sn=notifications');
+                                                                                            // TOPページコンテンツ作成描画：お知らせ
+                                                                                            $("#row_news_contents").html(createNewsHTML(notifications));
+                                                                                            console.log(new Date() + ' type：html success：createNewsHTML');
+                                                                                            $.LoadingOverlay("hide");
+                                                                                        },
+                                                                                        function() {
+                                                                                            console.log('error：sn=notifications');
+                                                                                        }
+                                                                                    );
+                                                                            },
+                                                                            function() {
+                                                                                console.log('error：sn=inner_work_management');
+                                                                            }
+                                                                        );
+                                                                },
+                                                                function() {
+                                                                    console.log('error：sn=project_management');
+                                                                }
+                                                            );
                                                     },
                                                     function() {
                                                         console.log('error：sn=out');
@@ -483,6 +618,8 @@
             out_toplinks += '<i class="fa fa-user fa-fw"></i>' + email + '<b class="caret"></b>';
             out_toplinks += '</a>';
             out_toplinks += '<ul class="dropdown-menu dropdown-user">';
+            out_toplinks += '<li><a href="#" onclick="renderMyPage(\'' + email + '\')"><i class="fa fa-user fa-fw"></i>マイページ</a>';
+            out_toplinks += '</li>';
             out_toplinks += '<li><a href="#" onclick="signOut()"><i class="fa fa-sign-out fa-fw"></i>ログアウト</a>';
             out_toplinks += '</li>';
             out_toplinks += '</ul>';
@@ -490,6 +627,18 @@
             return out_toplinks;
         }
 
+        function createNewsHTML(data) {
+            var out_news = '';
+            for (var idx in data) {
+                out_news += '<div class="col-lg-3 col-md-6">';
+                out_news += '<div class="panel panel-default">';
+                out_news += '<div class="panel-heading">' + data[idx].日時 + '：' + data[idx].タイトル + '</div>';
+                out_news += '<div class="panel-body"><p>' + data[idx].内容 + '(' + data[idx].更新者 + ')</p></div>';
+                out_news += '</div>';
+                out_news += '</div>';
+            }
+            return out_news;
+        }
 
         function createMenuHTML(book, data) {
             var out_memu = '';
@@ -515,23 +664,112 @@
             return out_memu
         }
 
+        function createPanelHTML(data) {
+            var out_panel = '';
+            for (var idx in data) {
+                if (data[idx].level > 1) {
+                    out_panel += '<div class="' + data[idx].class_grid + '">'
+                    out_panel += '<div class="' + data[idx].class_panel + '">'
+                    out_panel += '<div class="panel-heading">'
+                    out_panel += '<div class="row">'
+                    out_panel += '<div class="col-xs-3">'
+                    out_panel += '<i class="' + data[idx].class_icon + '"></i>'
+                    out_panel += '</div>'
+                    out_panel += '<div class="col-xs-9 text-right">'
+                    out_panel += '<div class="huge">' + data[idx].rows + '</div>'
+                    out_panel += '<div>' + data[idx].comment + '!</div>'
+                    out_panel += '</div>'
+                    out_panel += '</div>'
+                    out_panel += '</div>'
+                    out_panel += '<a href="#" onclick="renderContents(\'pj\',\'' + data[idx].sheet_name + '\',\'' + data[idx].sheet_name_jp + '\',\'' + data[idx].link + '\',\'' + data[idx].type + '\')">'
+                    out_panel += '<div class="panel-footer">'
+                    out_panel += '<span class="pull-left">' + data[idx].sheet_name_jp + '</span>'
+                    out_panel += '<span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>'
+                    out_panel += '<div class="clearfix"></div>'
+                    out_panel += '</div>'
+                    out_panel += '</a>'
+                    out_panel += '</div>'
+                    out_panel += '</div>'
+                }
+            }
+            return out_panel
+        }
+
+        function createDataTables(book, sheet_name, sheet_name_jp, link) {
+            var url;
+            var btnSheetLink = '<span style="font-size:20px">' + sheet_name_jp + '</span>';
+            if (sheet_name != "transportation_costs") {
+                btnSheetLink = '<span style="font-size:20px">' + sheet_name_jp + '</span><span class="pull-right"><a class="btn btn-primary btn-sm" id="btnSheetLink" target="_blank" href="' + link + '">更新</a></span><div class="clearfix"></div>';
+            }
+
+            if (book == "pj") {
+                url = url_pj + '?sn=' + sheet_name;
+                $("#row_dataTables_title").html('<div class="col-lg-12"><h3 class="page-header">プロジェクト管理</h3></div>');
+            } else {
+                url = url_iw + '?sn=' + sheet_name;
+                $("#row_dataTables_title").html('<div class="col-lg-12"><h3 class="page-header">社内業務管理</h3></div>');
+                if (sheet_name == "transportation_costs") {
+                    url += '&q=' + $("#userId")[0].innerText;
+                }
+            }
+            $("#dataTables_panel_header").html(btnSheetLink);
+            $.ajax({
+                    type: 'GET',
+                    url: url,
+                    dataType: 'jsonp',
+                    jsonpCallback: 'jsondata'
+                })
+                .then(
+                    function(result) {
+                        var arrHeader = new Array();
+                        for (var key in result[0]) {
+                            arrHeader.push((new Function("return " + '{data:"' + key + '"}'))());
+                        }
+                        $("#output_dataTables").html(createDataTablesHTML(arrHeader));
+                        $('#datatable').DataTable({
+                            destroy: true,
+                            data: result,
+                            autoWidth: false,
+                            columns: arrHeader
+                        });
+                    },
+                    function() {
+                        console.log('error');
+                    }
+                );
+        }
+
+        function createDataTablesHTML(arrHeader) {
+            var out_thead = '<table class="table table-striped table-bordered table-hover" id="datatable">';
+            out_thead += '<thead>';
+            out_thead += '<tr>';
+            for (var idx in arrHeader) {
+                out_thead += '<th>' + arrHeader[idx].data + '</th>';
+            }
+            out_thead += '</thead>';
+            out_thead += '</tr>';
+            out_thead += '</table>';
+            return out_thead
+        }
 
         function toggleMenu(obj) {
             $(obj).next('ul').slideToggle();
         }
 
-        function atrBtnControl(status, data, user_email) {
+        function atrBtnControl(status, data) {
             for (var idx in data) {
-                var tmptstamp = new Date(data[idx].タイムスタンプ).toLocaleString("ja").split(" ")[0];
-                var tmpdatetime = new Date($('#datetime').html().substr(0, 10)).toLocaleString("ja").split(" ")[0];
-                if (tmptstamp == tmpdatetime) {
+                if (new Date(data[idx].タイムスタンプ).toLocaleString("ja").split(" ")[0] == new Date($('#datetime').html().substr(0, 10)).toLocaleString("ja").split(" ")[0]) {
                     $("#btn" + status).prop("disabled", true);
                 }
             }
-            //renderMyPage(user_email);
         }
 
         function renderMyPage(email) {
+            $.LoadingOverlay("show");
+            $(".row").hide();
+            $("#row_mypage_title").show();
+            $("#row_mypage_contents").show();
+            console.log('renderMyPage');
             $.ajax({
                     type: 'GET',
                     url: url_atr + '?sn=in&q=' + email,
@@ -571,14 +809,17 @@
                                     }
                                     // 実働計算
                                     calcTotal();
+                                    $.LoadingOverlay("hide");
                                 },
                                 function() {
                                     console.log('error');
+                                    $.LoadingOverlay("hide");
                                 }
                             );
                     },
                     function() {
                         console.log('error');
+                        $.LoadingOverlay("hide");
                     }
                 );
         }
