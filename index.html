@@ -79,7 +79,7 @@
                         <li><a href="#" onclick="toggleMenu(this); return false;"><i class="fa fa-sitemap fa-fw"></i> マイページ<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level" style="display: none;">
                                 <li><a href="#" onclick=""><i class="fa fa-user fa-fw"></i> アカウント</a></li>
-                                <li><a href="#" onclick=""><i class="fa fa-table fa-fw"></i> 勤務表</a></li>
+                                <li><a href="#" onclick="showContentsInout()"><i class="fa fa-table fa-fw"></i> 勤務表</a></li>
                                 <li><a href="#" onclick=""><i class="fa fa-money fa-fw"></i> 経費精算</a></li>
                                 <li><a href="#" onclick=""><i class="fa fa-list-ul fa-fw"></i> スキルシート</a></li>
                             </ul>
@@ -93,13 +93,13 @@
         <!-- Page Content -->
         <div id="page-wrapper">
             <div class="container-fluid">
-
-                <div class="row" id="row_inout_title">
+                <input type="hidden" id="userId">
+                <div class="row" id="row_btnInout_title">
                     <div class="col-lg-12">
                         <h3 class="page-header" id="datetime"></h3>
                     </div>
                 </div>
-                <div class="row" id="row_inout">
+                <div class="row" id="row_btnInout_contents">
                     <div class="col-lg-6">
                         <form id="attendannce_record_in_form" role="form">
                             <fieldset>
@@ -139,16 +139,16 @@
                                 <i class="fa fa-list-ul fa-fw"></i> スキルシート
                             </a>
                         </div>
+                        <button type="button" class="btn btn-primary btn-lg btn-block">メインメニュー</button>
                     </div>
                 </div>
-                <button type="button" class="btn btn-primary btn-lg btn-block">メインメニュー</button>
 
-                <div class="row" id="row_mypage_title" style="display: none;">
+                <div class="row" id="row_inout_title" style="display: none;">
                     <div class="col-lg-12">
-                        <h3 class="page-header">マイページ</h3>
+                        <h3 class="page-header">勤務表</h3>
                     </div>
                 </div>
-                <div class="row" id="row_mypage_contents" style="display: none;"></div>
+                <div class="row" id="row_inout_contents" style="display: none;"></div>
 
                 <div class="row" id="row_transportation_costs_contents" style="display: none;">
                     <div class="panel-body">
@@ -242,7 +242,7 @@
             apiKey: "AIzaSyArEg2nQofEnSJAdHhq86VsQHugfD-vfb8",
             authDomain: "exaprime-dev-admin.firebaseapp.com",
         };
-        const admin_user = ["hiroshi.katou@exaprime.co.jp", "takashi.miura@exaprime.co.jp"];
+        const admin_user = ["hiroshi.katou@exaprime.co.jp", "hideaki.hazama@exaprime.co.jp"];
         const url_user = 'https://script.google.com/macros/s/AKfycbztaNYCMJKZczlxj5nXD2L1Ac-nR9thkeLOyqz-BsXAs5iBNrc/exec';
         const url_atr = 'https://script.google.com/macros/s/AKfycbz4M2vKlT_VLl4vUSj3YASs9OhaedReWW-0T59u_Ij1v3W1BMw/exec';
         const url_attendannce_record_in_form = 'https://docs.google.com/forms/d/e/1FAIpQLSfUvu5sVp3xGOCoW04o0q_zcUMZFvMumAorfMpK-c9R8RnMOw/formResponse';
@@ -318,6 +318,7 @@
                 if (user) {
                     // ログイン認証済
                     console.log(new Date() + ' type：auth success：auth user', user.email);
+                    $("#userId").val(user.email);
                     $("#attendannce_record_in_form_mail").val(user.email);
                     $("#attendannce_record_out_form_mail").val(user.email);
                     $("#transportation_costs_form_mail").val(user.email);
@@ -376,12 +377,13 @@
                             }
                         );
 
-
                     $('.datepicker').datepicker({
                         format: "yyyy/mm/dd",
                         language: 'ja',
                         autoclose: true
                     });
+
+                    // 出勤ボタン押下
                     $("#attendannce_record_in_form").submit(function(event) {
                         var attendannce_record_in_form_mail = $("#attendannce_record_in_form_mail").val();
                         $.ajax({
@@ -403,6 +405,8 @@
                         })
                         event.preventDefault();
                     });
+
+                    // 退勤ボタン押下
                     $("#attendannce_record_out_form").submit(function(event) {
                         var attendannce_record_out_form_mail = $("#attendannce_record_out_form_mail").val();
                         $.ajax({
@@ -467,20 +471,11 @@
 
         });
 
-        function renderContents(book, sheet_name, sheet_name_jp, link, type) {
-            $(".row").hide();
-            $("#row_dataTables_title").show();
-            $("#row_dataTables").show();
-            createDataTables(book, sheet_name, sheet_name_jp, link);
-            if (type == "form") {
-                $("#row_" + sheet_name + "_contents").show();
-            }
-        }
-
+        // ヘッダリンク作成
         function createTopLinksHTML(email) {
             var out_toplinks = '<li>';
-            out_toplinks += '<a class="dropdown-toggle" id="userId" data-toggle="dropdown" href="#" aria-expanded="true">';
-            out_toplinks += '<i class="fa fa-user fa-fw"></i>' + email + '<b class="caret"></b>';
+            out_toplinks += '<a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="true">';
+            out_toplinks += '<i class="fa fa-user fa-fw"></i> ' + email.match(/(.*)(?=@)/)[0] + '<b class="caret"></b>';
             out_toplinks += '</a>';
             out_toplinks += '<ul class="dropdown-menu dropdown-user">';
             out_toplinks += '<li><a href="#" onclick="signOut()"><i class="fa fa-sign-out fa-fw"></i>ログアウト</a>';
@@ -491,33 +486,110 @@
         }
 
 
-        function createMenuHTML(book, data) {
-            var out_memu = '';
-            var tmplv1st = '';
-            var tmplv1end = '';
-            var tmplv2st = '';
-            var tmplv2end = '';
-            var tmplv3 = '';
-
-            for (var idx in data) {
-                if (data[idx].level == 1) {
-                    tmplv1st += '<li>';
-                    tmplv1st += '<a href="#" onclick="toggleMenu(this); return false;"><i class="fa fa-sitemap fa-fw"></i>' + data[idx].sheet_name_jp + '<span class="fa arrow"></span></a>';
-                    tmplv1end += '</li>';
-                } else if (data[idx].level == 2) {
-                    tmplv2st += '<ul class="nav nav-second-level" style="display: none;"><li><a href="#" onclick="renderContents(\'' + book + '\',\'' + data[idx].sheet_name + '\',\'' + data[idx].sheet_name_jp + '\',\'' + data[idx].link + '\',\'' + data[idx].type + '\')">' + data[idx].sheet_name_jp + '</a></li>';
-                    tmplv2end += '</ul>';
-                } else if (data[idx].level == 3) {
-                    tmplv3 += '<li><a href="#" onclick="renderContents(\'' + book + '\',\'' + data[idx].sheet_name + '\',\'' + data[idx].sheet_name_jp + '\',\'' + data[idx].link + '\',\'' + data[idx].type + '\')">' + data[idx].sheet_name_jp + '</a></li>';
-                }
-            }
-            out_memu += tmplv1st + tmplv2st + tmplv3 + tmplv2end + tmplv1end;
-            return out_memu
-        }
-
-
+        // メニュー開閉
         function toggleMenu(obj) {
             $(obj).next('ul').slideToggle();
+        }
+
+        // 勤務表表示
+        function showContentsInout() {
+            // コンテンツ初期化
+            $(".row").hide();
+            $.ajax({
+                    // ユーザー情報取得(勤怠表のプルダウン用)
+                    type: 'GET',
+                    url: url_user + '?sn=user_list',
+                    dataType: 'jsonp',
+                    jsonpCallback: 'jsondata'
+                })
+                .then(
+                    function(user_list) {
+                        console.log(new Date() + ' type：ajax success：sn=user_list');
+                        // 勤怠表HTML作成
+                        createAtrMonthHTML($("#userId").val(), user_list, 0, 0);
+                    },
+                    function() {
+                        console.log('error：sn=user_list');
+                    }
+                );
+            $("#row_inout_title").show();
+            $("#row_inout_contents").show();
+        }
+
+        // 勤務カレンダー作成
+        function createAtrMonthHTML(email, userList, targetM, initF) {
+            const date = new Date()
+            const year = date.getFullYear()
+            const month = date.getMonth() + 1 + targetM
+            const startDate = new Date(year, month - 1, 1)
+            const endDate = new Date(year, month, 0)
+            const endDayCount = endDate.getDate()
+            const startDay = startDate.getDay()
+            var calendarHtml = '<div class="col-lg-12">'
+            calendarHtml += '<div class="panel panel-default">'
+            calendarHtml += '<div class="panel-heading">'
+            if (targetM != 0) {
+                calendarHtml += '<span style="font-size:20px" id="atrMonth_header">' + year + '年' + month + '月<a href="#" onclick="createAtrMonthHTML(\'' + email + '\',' + null + ',0)">　>></a></span><span class="pull-right"><a class="btn btn-primary btn-sm" id="btnSheetLink" href="#" onclick="exportExcel(\'xlsx\');">ダウンロード</a></span><div class="clearfix"></div>'
+            } else {
+                calendarHtml += '<span style="font-size:20px" id="atrMonth_header"><a href="#" onclick="createAtrMonthHTML(\'' + email + '\',' + null + ',-1)"><<　</a>' + year + '年' + month + '月</span><span class="pull-right"><a class="btn btn-primary btn-sm" id="btnSheetLink" href="#" onclick="exportExcel(\'xlsx\');">ダウンロード</a></span><div class="clearfix"></div>'
+            }
+            calendarHtml += '</div>'
+            calendarHtml += '<div class="panel-body">'
+            calendarHtml += '<div class="table-responsive" id="mypage_panel_contents">'
+            calendarHtml += '<select class="form-control" id="userSelectbox" onchange="renderMyPage(this[this.selectedIndex].innerText)">'
+            if ($.inArray(email, admin_user) !== -1) {
+                if (initF != 0) {
+                    for (var idx in userList) {
+                        calendarHtml += '<option>' + userList[idx].email + '</option>';
+                    }
+                }
+            } else {
+                calendarHtml += '<option>' + email + '</option>';
+            }
+            calendarHtml += '</select><br>';
+            calendarHtml += '<table class="table table-bordered table-hover table-sm" id="tblAtr">'
+            calendarHtml += '<thead><tr>'
+            calendarHtml += '<th style="width:80px;">日付</th>'
+            calendarHtml += '<th style="width:80px;">開始</th>'
+            calendarHtml += '<th style="width:80px;">終了</th>'
+            calendarHtml += '<th style="width:80px;">実働</th>'
+            calendarHtml += '<th>メモ</th>'
+            calendarHtml += '</tr></thead>'
+            calendarHtml += '<tfoot><tr>'
+            calendarHtml += '<th colspan="3" style="text-align: right;">合計</th>'
+            calendarHtml += '<th id="total" style="text-align: right;" id="total"></th>'
+            calendarHtml += '<th>h</th>'
+            calendarHtml += '</tr></tfoot>'
+            calendarHtml += '<tbody>'
+            for (var idx = 1; idx < endDayCount + 1; idx++) {
+                var day = "日月火水木金土" [new Date(year + "-" + month + "-" + ("00" + idx).slice(-2)).getDay()]
+                if (day == "土") {
+                    calendarHtml += '<tr class="info">'
+                } else if (day == "日") {
+                    calendarHtml += '<tr class="danger">'
+                } else if (getHoliday(year + "/" + month + "/" + idx) != "") {
+                    calendarHtml += '<tr class="danger">'
+                } else {
+                    calendarHtml += '<tr>'
+                }
+                var yyyymmddId = year + "-" + month + "-" + ("00" + idx).slice(-2)
+                calendarHtml += '<td>' + month + '/' + ("00" + idx).slice(-2) + '(' + day + ')' + '</td>'
+                calendarHtml += '<td id="in' + yyyymmddId + '" style="text-align: right;"></td>'
+                calendarHtml += '<td id="out' + yyyymmddId + '" style="text-align: right;"></td>'
+                calendarHtml += '<td id="subtotal' + yyyymmddId + '" style="text-align: right;"></td>'
+                calendarHtml += '<td id="memo' + yyyymmddId + '">' + getHoliday(year + "/" + month + "/" + idx) + '</td>'
+                calendarHtml += '</tr>'
+            }
+            calendarHtml += '</tbody></table>'
+            calendarHtml += '</div>'
+            calendarHtml += '</div>'
+            calendarHtml += '</div>'
+            calendarHtml += '</div>'
+
+            $("#row_inout_contents").html(calendarHtml);
+            if (initF != 0) {
+                renderMyPage(email);
+            }
         }
 
         function atrBtnControl(status, data, user_email) {
@@ -614,91 +686,9 @@
             $("#total").html(Math.floor(tmpmmtotal / 60) + ":" + tmpmmtotal % 60);
         }
 
-        // ログアウト
-        function signOut() {
-            firebase.auth().signOut().then(function() {
-                window.location.href = "login.html";
-            }).catch(function(error) {
-                console.log(error);
-                alert("サインアウト失敗");
-            });
-        }
 
-        function createAtrMonthHTML(email, userList, targetM, initF) {
-            const date = new Date()
-            const year = date.getFullYear()
-            const month = date.getMonth() + 1 + targetM
-            const startDate = new Date(year, month - 1, 1)
-            const endDate = new Date(year, month, 0)
-            const endDayCount = endDate.getDate()
-            const startDay = startDate.getDay()
-            var calendarHtml = '<div class="col-lg-12">'
-            calendarHtml += '<div class="panel panel-default">'
-            calendarHtml += '<div class="panel-heading">'
-            if (targetM != 0) {
-                calendarHtml += '<span style="font-size:20px" id="atrMonth_header">' + year + '年' + month + '月<a href="#" onclick="createAtrMonthHTML(\'' + email + '\',' + null + ',0)">　>></a></span><span class="pull-right"><a class="btn btn-primary btn-sm" id="btnSheetLink" href="#" onclick="exportExcel(\'xlsx\');">ダウンロード</a></span><div class="clearfix"></div>'
-            } else {
-                calendarHtml += '<span style="font-size:20px" id="atrMonth_header"><a href="#" onclick="createAtrMonthHTML(\'' + email + '\',' + null + ',-1)"><<　</a>' + year + '年' + month + '月</span><span class="pull-right"><a class="btn btn-primary btn-sm" id="btnSheetLink" href="#" onclick="exportExcel(\'xlsx\');">ダウンロード</a></span><div class="clearfix"></div>'
-            }
-            calendarHtml += '</div>'
-            calendarHtml += '<div class="panel-body">'
-            calendarHtml += '<div class="table-responsive" id="mypage_panel_contents">'
-            calendarHtml += '<select class="form-control" id="userSelectbox" onchange="renderMyPage(this[this.selectedIndex].innerText)">'
-            if ($.inArray(email, admin_user) !== -1) {
-                if (initF != 0) {
-                    for (var idx in userList) {
-                        calendarHtml += '<option>' + userList[idx].email + '</option>';
-                    }
-                }
-            } else {
-                calendarHtml += '<option>' + email + '</option>';
-            }
-            calendarHtml += '</select><br>';
-            calendarHtml += '<table class="table table-bordered table-hover table-sm" id="tblAtr">'
-            calendarHtml += '<thead><tr>'
-            calendarHtml += '<th style="width:80px;">日付</th>'
-            calendarHtml += '<th style="width:80px;">開始</th>'
-            calendarHtml += '<th style="width:80px;">終了</th>'
-            calendarHtml += '<th style="width:80px;">実働</th>'
-            calendarHtml += '<th>メモ</th>'
-            calendarHtml += '</tr></thead>'
-            calendarHtml += '<tfoot><tr>'
-            calendarHtml += '<th colspan="3" style="text-align: right;">合計</th>'
-            calendarHtml += '<th id="total" style="text-align: right;" id="total"></th>'
-            calendarHtml += '<th>h</th>'
-            calendarHtml += '</tr></tfoot>'
-            calendarHtml += '<tbody>'
-            for (var idx = 1; idx < endDayCount + 1; idx++) {
-                var day = "日月火水木金土" [new Date(year + "-" + month + "-" + ("00" + idx).slice(-2)).getDay()]
-                if (day == "土") {
-                    calendarHtml += '<tr class="info">'
-                } else if (day == "日") {
-                    calendarHtml += '<tr class="danger">'
-                } else if (getHoliday(year + "/" + month + "/" + idx) != "") {
-                    calendarHtml += '<tr class="danger">'
-                } else {
-                    calendarHtml += '<tr>'
-                }
-                var yyyymmddId = year + "-" + month + "-" + ("00" + idx).slice(-2)
-                calendarHtml += '<td>' + month + '/' + ("00" + idx).slice(-2) + '(' + day + ')' + '</td>'
-                calendarHtml += '<td id="in' + yyyymmddId + '" style="text-align: right;"></td>'
-                calendarHtml += '<td id="out' + yyyymmddId + '" style="text-align: right;"></td>'
-                calendarHtml += '<td id="subtotal' + yyyymmddId + '" style="text-align: right;"></td>'
-                calendarHtml += '<td id="memo' + yyyymmddId + '">' + getHoliday(year + "/" + month + "/" + idx) + '</td>'
-                calendarHtml += '</tr>'
-            }
-            calendarHtml += '</tbody></table>'
-            calendarHtml += '</div>'
-            calendarHtml += '</div>'
-            calendarHtml += '</div>'
-            calendarHtml += '</div>'
 
-            $("#row_mypage_contents").html(calendarHtml);
-            if (initF != 0) {
-                renderMyPage(email);
-            }
-        }
-
+        // Excelダウンロード
         function exportExcel(type, fn, dl) {
             var elt = document.getElementById('tblAtr');
             var wb = XLSX.utils.table_to_book(elt, {
@@ -713,6 +703,7 @@
                 XLSX.writeFile(wb, fn || ($("#atrMonth_header")[0].innerText + '_迫間.' + (type || 'xlsx')));
         }
 
+        // 祝日取得
         function getHoliday(target) {
             var holiday = '';
             var result = $.grep(holidayList,
@@ -726,13 +717,25 @@
             return holiday
         }
 
-        function showtime() {
-            var today = new Date();
-            month = ("00" + (today.getMonth() + 1)).slice(-2);
-            date = ("00" + today.getDate()).slice(-2);
-            $('#datetime').html(today.getFullYear() + "-" + month + "-" + date + "(" + "日月火水木金土" [today.getDay()] + ") " + today.getHours() + ":" + ('0' + today.getMinutes()).slice(-2) + ":" + ('0' + today.getSeconds()).slice(-2));
+        // ログアウト
+        function signOut() {
+            firebase.auth().signOut().then(function() {
+                window.location.href = "login.html";
+            }).catch(function(error) {
+                console.log(error);
+                alert("サインアウト失敗");
+            });
         }
-        setInterval(showtime, 1000);
+
+        // 時計
+        function showClock() {
+            var today = new Date();
+            var month = ("00" + (today.getMonth() + 1)).slice(-2);
+            var date = ("00" + today.getDate()).slice(-2);
+            var clock = today.getFullYear() + "-" + month + "-" + date + "(" + "日月火水木金土" [today.getDay()] + ") " + today.getHours() + ":" + ('0' + today.getMinutes()).slice(-2) + ":" + ('0' + today.getSeconds()).slice(-2);
+            $('#datetime').html(clock);
+        }
+        setInterval(showClock, 1000);
     </script>
 </body>
 
