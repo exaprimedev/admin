@@ -866,9 +866,15 @@
         }
 
         function createAtrMonthHTML(email, userList, targetM, initF) {
+            var year
             const date = new Date()
-            const year = date.getFullYear()
-            const month = date.getMonth() + 1 + targetM
+            var month = date.getMonth() + 1 + targetM
+            if (month == 0) {
+                year = date.getFullYear() - 1
+                month = 12
+            } else {
+                year = date.getFullYear()
+            }
             const startDate = new Date(year, month - 1, 1)
             const endDate = new Date(year, month, 0)
             const endDayCount = endDate.getDate()
@@ -920,7 +926,7 @@
                 } else {
                     calendarHtml += '<tr>'
                 }
-                var yyyymmddId = year + "-" + month + "-" + ("00" + idx).slice(-2)
+                var yyyymmddId = year + "-" + ("00" + month).slice(-2) + "-" + ("00" + idx).slice(-2)
                 calendarHtml += '<td>' + month + '/' + ("00" + idx).slice(-2) + '(' + day + ')' + '</td>'
                 calendarHtml += '<td id="in' + yyyymmddId + '" style="text-align: right;"></td>'
                 calendarHtml += '<td id="out' + yyyymmddId + '" style="text-align: right;"></td>'
